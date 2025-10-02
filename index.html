@@ -1,277 +1,406 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Rätsel-Adventskalender — Starter</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rätsel-Adventskalender</title>
   <style>
-    :root{--gap:10px;--door-size:96px}
-    html,body{height:100%;}
-    body{
-      font-family:Inter,system-ui,Arial,sans-serif;margin:0;padding:18px;color:#111;
-      /* Weihnachts-Hintergrundbild (Beispiel von Unsplash) */
-      background-image: url('./Weihnachten.jpg');
-      background-size:cover;background-position:center center;background-attachment:fixed;
+    :root{
+      --gap:10px;
+      --door-size:96px;
+      /* Hintergrundbild hier anpassen (relative Pfade oder absolute URL) */
+      --bg-url: url('./images/bg-advent.jpg');
     }
-    /* dunkler Overlay damit Text lesbar ist */
-    .overlay{background:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.35));min-height:100%;padding:18px;border-radius:8px}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-    h1{font-size:1.2rem;margin:0;color:#fff}
-    .controls{display:flex;gap:8px;align-items:center}
-    input[type="number"]{width:64px;padding:6px}
-    .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--gap);max-width:920px;margin-top:18px}
-    .door{height:var(--door-size);display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff,#f1f5ff);border-radius:8px;border:1px solid rgba(0,0,0,0.12);cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,0.25);font-weight:800}
-    .door.locked{display:none;}
-    .door.opened{background:linear-gradient(180deg,#fffbe8,#fff1c7)}
-    #puzzleBox{margin-top:18px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.95);border:1px solid #e0e6f0;max-width:920px}
-    label{display:block;margin:8px 0}
-    input[type=text], textarea{width:100%;padding:8px;border:1px solid #ccd5ea;border-radius:6px}
+
+    html,body{height:100%;margin:0;padding:0;font-family:Inter, system-ui, Arial, sans-serif;}
+    body{
+      /* Hintergrundbild */
+      background-image: var(--bg-url);
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+      /* Fallback-Farbe */
+      background-color:#0f172a;
+      color:#111;
+    }
+
+    /* dunkles Overlay, damit der Text lesbar bleibt */
+    .page {
+      min-height:100%;
+      padding:18px;
+      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.35));
+      box-sizing:border-box;
+      /* Stacking context: content wird über dem Bild liegen */
+      position: relative;
+      z-index: 1;
+    }
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+    }
+    h1{margin:0;color:#fff;font-size:1.2rem}
+    .controls{display:flex;gap:8px;align-items:center;color:#fff}
+    .controls label{display:flex;align-items:center;gap:6px;font-size:0.95rem}
+    input[type="number"]{width:72px;padding:6px;border-radius:6px;border:1px solid #ccc}
+    input[type="checkbox"]{transform:scale(1.1)}
     button{padding:8px 12px;border-radius:8px;border:0;background:#2b6cff;color:white;cursor:pointer}
     button.secondary{background:#6b7280}
+
+    /* Grid container: relative and high z-index to be above overlay */
+    .grid {
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--gap);
+      max-width: 920px;
+      position: relative;
+      z-index: 5; /* sicher über Overlay */
+    }
+
+    /* Door cards */
+    .door {
+      height: var(--door-size);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg,#fff,#f1f5ff);
+      border-radius:10px;
+      border:1px solid rgba(0,0,0,0.12);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      font-weight:800;
+      font-size:1.05rem;
+      cursor:pointer;
+      user-select:none;
+      position: relative;
+      z-index: 10; /* immer oben */
+    }
+
+    .door.locked{
+      display:none; /* bis freigeschaltet unsichtbar */
+    }
+
+    .door.opened{
+      background: linear-gradient(180deg,#fffbe8,#fff1c7);
+    }
+
+    /* Puzzle box and admin - also above overlay */
+    #puzzleBox, #adminPanel{
+      margin-top:18px;
+      padding:14px;
+      border-radius:10px;
+      background: rgba(255,255,255,0.98);
+      max-width:920px;
+      border:1px solid #dfe7f6;
+      position: relative;
+      z-index: 6;
+    }
+
+    label{display:block;margin:8px 0}
+    input[type=text], textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccd5ea}
     table{border-collapse:collapse;width:100%;margin-top:12px}
     table th, table td{border:1px solid #e6e9f2;padding:6px;text-align:left}
-    .top-right{font-size:0.9rem;color:#fff}
-    .note{color:#fff;font-size:0.95rem}
+    .note{color:#fff;font-size:0.95rem;margin-top:6px}
+    @media (max-width:720px){
+      .grid{grid-template-columns:repeat(3,1fr)}
+      :root{--door-size:78px}
+    }
   </style>
 </head>
 <body>
-  <div class="overlay">
-  <header>
-    <div>
-      <h1>Rätsel-Adventskalender — Starter</h1>
-      <div class="note">Die Türchen erscheinen täglich ab dem 1. Dezember. Vor dem 1.12. sind keine Türchen sichtbar.</div>
-    </div>
-    <div class="controls top-right">
-      <label style="display:flex;align-items:center;gap:8px;color:#fff">
-        Aktiver Tag
-        <input id="activeDayInput" type="number" min="0" max="24" value="0" title="0-24" />
-      </label>
-      <label style="display:flex;align-items:center;gap:6px;color:#fff">
-        <input id="useRealDate" type="checkbox" checked /> Echt-Datum
-      </label>
-      <button id="adminBtn" class="secondary">Admin</button>
-    </div>
-  </header>
-
-  <main>
-    <div id="gridContainer">
-      <div class="grid" id="grid"></div>
-    </div>
-
-    <div id="puzzleBox" style="display:none">
-      <h3 id="puzzleTitle">Rätsel</h3>
-      <div id="puzzleContent">Platzhalter für Rätsel (Text, Bild, Audio, Link etc.).</div>
-
-      <label>Dein Name (sichtbar):
-        <input id="nameField" type="text" placeholder="z. B. Anna" />
-      </label>
-      <label>Antwort (optional):
-        <textarea id="answerField" rows="3" placeholder="Antwort eingeben..."></textarea>
-      </label>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="saveBtn">Absenden</button>
-        <button id="closeBtn" class="secondary">Schließen</button>
-        <div id="saveMsg" style="color:green;margin-left:8px"></div>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Rätsel-Adventskalender</h1>
+        <div class="note">Die Türchen schalten sich ab dem 1. Dezember täglich frei. Für Vorschau: Deaktiviere „Echt-Datum“ und setze den aktiven Tag.</div>
       </div>
-    </div>
 
-    <div id="adminPanel" style="display:none;margin-top:12px">
-      <h3 style="color:#fff">Admin — Einsendungen</h3>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="downloadCsv">CSV herunterladen</button>
-        <button id="clearData" class="secondary">Alles löschen</button>
-        <button id="closeAdmin" class="secondary">Schließen</button>
+      <div class="controls">
+        <label>Aktiver Tag
+          <input id="activeDayInput" type="number" min="0" max="24" value="0" />
+        </label>
+        <label title="Wenn aktiv, wird das aktuelle Gerätedatum verwendet.">
+          <input id="useRealDate" type="checkbox" checked /> Echt-Datum
+        </label>
+        <button id="adminBtn" class="secondary">Admin</button>
       </div>
-      <div id="submissionsTableWrap"></div>
-    </div>
-  </main>
+    </header>
+
+    <main>
+      <div class="grid" id="grid" aria-live="polite"></div>
+
+      <div id="puzzleBox" style="display:none">
+        <h3 id="puzzleTitle">Rätsel</h3>
+        <div id="puzzleContent">Platzhalter für Rätsel (Text / Bild / Link / Audio).</div>
+
+        <label>Dein Name (sichtbar):
+          <input id="nameField" type="text" placeholder="z. B. Anna" />
+        </label>
+        <label>Antwort (optional):
+          <textarea id="answerField" rows="3" placeholder="Antwort eingeben..."></textarea>
+        </label>
+
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+          <button id="saveBtn">Absenden</button>
+          <button id="closeBtn" class="secondary">Schließen</button>
+          <div id="saveMsg" style="color:green;margin-left:8px"></div>
+        </div>
+      </div>
+
+      <div id="adminPanel" style="display:none">
+        <h3>Admin — Einsendungen</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="downloadCsv">CSV herunterladen</button>
+          <button id="clearData" class="secondary">Alles löschen</button>
+          <button id="closeAdmin" class="secondary">Schließen</button>
+        </div>
+        <div id="submissionsTableWrap"></div>
+      </div>
+    </main>
   </div>
 
-<script>
-// ------------------ Updated Advent prototype ------------------
-// Behaviour changes requested:
-// - Background Christmas image (done in CSS)
-// - Until Dec 1: no doors visible
-// - From Dec 1: each day another door unlocked (day 1 -> 1 door; day 2 -> 2 doors ...)
-// - Unlocked doors appear in random positions (we shuffle their order on each render)
-// - Removed footer hint (done)
+  <script>
+    // Robust, kommentierter Kalender-Script
+    (function(){
+      // Elemente
+      const grid = document.getElementById('grid');
+      const activeDayInput = document.getElementById('activeDayInput');
+      const useRealDate = document.getElementById('useRealDate');
+      const puzzleBox = document.getElementById('puzzleBox');
+      const puzzleTitle = document.getElementById('puzzleTitle');
+      const puzzleContent = document.getElementById('puzzleContent');
+      const nameField = document.getElementById('nameField');
+      const answerField = document.getElementById('answerField');
+      const saveBtn = document.getElementById('saveBtn');
+      const closeBtn = document.getElementById('closeBtn');
+      const saveMsg = document.getElementById('saveMsg');
 
-const GRID = document.getElementById('grid');
-const activeDayInput = document.getElementById('activeDayInput');
-const useRealDate = document.getElementById('useRealDate');
-const puzzleBox = document.getElementById('puzzleBox');
-const puzzleTitle = document.getElementById('puzzleTitle');
-const puzzleContent = document.getElementById('puzzleContent');
-const nameField = document.getElementById('nameField');
-const answerField = document.getElementById('answerField');
-const saveBtn = document.getElementById('saveBtn');
-const closeBtn = document.getElementById('closeBtn');
-const saveMsg = document.getElementById('saveMsg');
-const adminBtn = document.getElementById('adminBtn');
-const adminPanel = document.getElementById('adminPanel');
-const submissionsTableWrap = document.getElementById('submissionsTableWrap');
-const downloadCsv = document.getElementById('downloadCsv');
-const clearData = document.getElementById('clearData');
-const closeAdmin = document.getElementById('closeAdmin');
+      const adminBtn = document.getElementById('adminBtn');
+      const adminPanel = document.getElementById('adminPanel');
+      const downloadCsv = document.getElementById('downloadCsv');
+      const clearData = document.getElementById('clearData');
+      const closeAdmin = document.getElementById('closeAdmin');
+      const submissionsTableWrap = document.getElementById('submissionsTableWrap');
 
-let activeDay = 0;
-let openedDay = null;
+      let activeDay = 0;
+      let openedDay = null;
 
-function computeActiveDayFromDate(){
-  const now = new Date();
-  const year = now.getFullYear();
-  const dec1 = new Date(year,11,1,0,0,0);
-  const dec24 = new Date(year,11,24,23,59,59);
-  if(now < dec1) return 0;
-  if(now > dec24) return 24;
-  // in December: day of month
-  return Math.min(24, now.getDate());
-}
+      // Utility: shuffle array in-place
+      function shuffle(array){
+        for(let i = array.length - 1; i > 0; i--){
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
 
-function shuffle(array){
-  for(let i=array.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+      function computeActiveDayFromDate(){
+        const now = new Date();
+        const year = now.getFullYear();
+        const dec1 = new Date(year, 11, 1, 0, 0, 0); // month index: 11 = December
+        const dec24 = new Date(year, 11, 24, 23, 59, 59);
+        if(now < dec1) return 0;
+        if(now > dec24) return 24;
+        return Math.min(24, now.getDate());
+      }
 
-function renderGrid(){
-  GRID.innerHTML = '';
-  // If activeDay is 0, show nothing (no doors visible until Dec 1)
-  if(activeDay === 0){
-    // empty container; you could show a decorative message
-    const placeholder = document.createElement('div');
-    placeholder.style.gridColumn = '1/-1';
-    placeholder.style.color = '#fff';
-    placeholder.style.padding = '18px';
-    placeholder.innerHTML = '<strong>Die Türchen erscheinen am 1. Dezember.</strong>';
-    GRID.appendChild(placeholder);
-    return;
-  }
+      // LocalStorage helpers
+      function loadSubmissions(){
+        try{
+          const raw = localStorage.getItem('advent_submissions');
+          if(!raw) return [];
+          return JSON.parse(raw);
+        } catch(e){ return []; }
+      }
+      function saveSubmissions(arr){
+        localStorage.setItem('advent_submissions', JSON.stringify(arr));
+      }
+      function loadMeta(){
+        try{ return JSON.parse(localStorage.getItem('advent_meta')||'{}'); } catch(e){ return {}; }
+      }
+      function saveMeta(obj){
+        localStorage.setItem('advent_meta', JSON.stringify(obj));
+      }
 
-  // Create array 1..24, shuffle to randomize positions
-  const nums = [];
-  for(let d=1; d<=24; d++) nums.push(d);
-  shuffle(nums);
+      // Build the grid: shuffle positions and render only unlocked doors
+      function renderGrid(){
+        grid.innerHTML = '';
+        // If no doors unlocked: show message
+        if(activeDay === 0){
+          const ph = document.createElement('div');
+          ph.style.gridColumn = '1/-1';
+          ph.style.color = '#fff';
+          ph.style.padding = '18px';
+          ph.innerHTML = '<strong>Die Türchen erscheinen am 1. Dezember.</strong>';
+          grid.appendChild(ph);
+          return;
+        }
 
-  // Only render the doors that are unlocked (<= activeDay)
-  // To preserve a bit of layout, also render locked placeholders as invisible (display:none)
-  for(const d of nums){
-    const el = document.createElement('div');
-    el.className = 'door';
-    el.textContent = d;
-    el.dataset.day = d;
-    if(d <= activeDay){
-      el.addEventListener('click', ()=> onDoorClick(d, el));
-    } else {
-      // locked: hide
-      el.classList.add('locked');
-    }
-    GRID.appendChild(el);
-  }
-}
+        // numbers 1..24, shuffle for random positions
+        const numbers = [];
+        for(let i=1;i<=24;i++) numbers.push(i);
+        shuffle(numbers);
 
-function onDoorClick(day, el){
-  if(day > activeDay){ alert('Noch gesperrt.'); return; }
-  openedDay = day;
-  showPuzzleForDay(day);
-}
+        for(const n of numbers){
+          const d = document.createElement('div');
+          d.className = 'door';
+          d.textContent = n;
+          d.dataset.day = n;
+          if(n <= activeDay){
+            d.addEventListener('click', ()=> openDoor(n, d));
+          } else {
+            d.classList.add('locked'); // hidden by CSS
+          }
+          grid.appendChild(d);
+        }
 
-function showPuzzleForDay(day){
-  puzzleTitle.textContent = `Rätsel — Tag ${day}`;
-  puzzleContent.innerHTML = `<p>Hier kannst du ein Rätsel, ein Bild oder einen Link für Tag ${day} einfügen.</p>`;
-  const meta = loadMeta(); if(meta && meta.lastName) nameField.value = meta.lastName;
-  answerField.value = '';
-  saveMsg.textContent = '';
-  puzzleBox.style.display = 'block';
-  window.scrollTo({top: puzzleBox.offsetTop - 20, behavior:'smooth'});
-}
+        // mark already-submitted doors
+        const subs = loadSubmissions();
+        subs.forEach(s => { if(s && s.day) markDoorOpened(s.day); });
+      }
 
-closeBtn.addEventListener('click', ()=>{ puzzleBox.style.display='none'; openedDay=null; });
+      function openDoor(day, el){
+        if(day > activeDay) { alert('Noch gesperrt.'); return; }
+        openedDay = day;
+        showPuzzleForDay(day);
+      }
 
-// localStorage helper
-function loadSubmissions(){
-  try{ const raw = localStorage.getItem('advent_submissions'); if(!raw) return []; return JSON.parse(raw); }catch(e){ return []; }
-}
-function saveSubmissions(arr){ localStorage.setItem('advent_submissions', JSON.stringify(arr)); }
-function loadMeta(){ try{ return JSON.parse(localStorage.getItem('advent_meta')||'{}'); }catch(e){return{}}; }
-function saveMeta(obj){ localStorage.setItem('advent_meta', JSON.stringify(obj)); }
+      function showPuzzleForDay(day){
+        puzzleTitle.textContent = `Rätsel — Tag ${day}`;
+        // Placeholder content: replace this with real per-day content later
+        puzzleContent.innerHTML = `<p>Hier steht das Rätsel für Tag ${day}. Du kannst Text, Bild-URL, Audio oder Links einfügen.</p>`;
+        const meta = loadMeta();
+        if(meta && meta.lastName) nameField.value = meta.lastName;
+        answerField.value = '';
+        saveMsg.textContent = '';
+        puzzleBox.style.display = 'block';
+        puzzleBox.scrollIntoView({behavior:'smooth', block:'start'});
+      }
 
-saveBtn.addEventListener('click', ()=>{
-  const name = nameField.value.trim();
-  const ans = answerField.value.trim();
-  if(!name){ alert('Bitte Namen eingeben (sichtbar).'); return; }
-  const subs = loadSubmissions();
-  subs.push({ day: openedDay, name, answer: ans, ts: new Date().toISOString() });
-  saveSubmissions(subs);
-  saveMeta({ lastName: name });
-  saveMsg.textContent = 'Gespeichert ✓';
-  markDoorOpened(openedDay);
-});
+      closeBtn.addEventListener('click', ()=> { puzzleBox.style.display = 'none'; openedDay = null; });
 
-function markDoorOpened(day){
-  const el = GRID.querySelector(`[data-day="${day}"]`);
-  if(el) el.classList.add('opened');
-}
+      saveBtn.addEventListener('click', ()=> {
+        const name = nameField.value.trim();
+        const answer = answerField.value.trim();
+        if(!name){ alert('Bitte Namen eingeben.'); return; }
+        const subs = loadSubmissions();
+        subs.push({ day: openedDay, name, answer, ts: new Date().toISOString() });
+        saveSubmissions(subs);
+        saveMeta({ lastName: name });
+        saveMsg.textContent = 'Gespeichert ✓';
+        markDoorOpened(openedDay);
+      });
 
-// Admin
-adminBtn.addEventListener('click', ()=>{
-  const pass = prompt('Admin öffnen — Passwort? (Standard: "admin")');
-  if(pass === null) return;
-  if(pass !== 'admin') { alert('Falsches Passwort'); return; }
-  renderAdmin();
-  adminPanel.style.display = 'block';
-  window.scrollTo({top: adminPanel.offsetTop - 10, behavior:'smooth'});
-});
+      function markDoorOpened(day){
+        const el = grid.querySelector(`[data-day="${day}"]`);
+        if(el) el.classList.add('opened');
+      }
 
-closeAdmin.addEventListener('click', ()=>{ adminPanel.style.display = 'none'; });
+      // Admin functions (simple gate)
+      adminBtn.addEventListener('click', ()=> {
+        const pass = prompt('Admin öffnen — Passwort? (Standard: admin)');
+        if(pass === null) return;
+        if(pass !== 'admin'){ alert('Falsches Passwort'); return; }
+        renderAdmin();
+        adminPanel.style.display = 'block';
+        adminPanel.scrollIntoView({behavior:'smooth', block:'start'});
+      });
 
-function renderAdmin(){
-  const subs = loadSubmissions();
-  if(subs.length === 0){ submissionsTableWrap.innerHTML = '<p style="color:#fff">Keine Einsendungen.</p>'; return; }
-  let html = '<table><thead><tr><th>Tag</th><th>Name</th><th>Antwort</th><th>Zeitstempel</th></tr></thead><tbody>';
-  for(const s of subs){ html += `<tr><td>${s.day}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.answer)}</td><td>${s.ts}</td></tr>`; }
-  html += '</tbody></table>';
-  submissionsTableWrap.innerHTML = html;
-}
+      closeAdmin.addEventListener('click', ()=> { adminPanel.style.display = 'none'; });
 
-downloadCsv.addEventListener('click', ()=>{
-  const subs = loadSubmissions(); if(subs.length === 0){ alert('Keine Einsendungen.'); return; }
-  const rows = [['day','name','answer','timestamp']]; for(const s of subs) rows.push([s.day, s.name, s.answer, s.ts]);
-  const csv = rows.map(r => r.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(',')).join('
-');
-  const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-});
+      function renderAdmin(){
+        const subs = loadSubmissions();
+        if(!subs || subs.length === 0){
+          submissionsTableWrap.innerHTML = '<p>Keine Einsendungen.</p>';
+          return;
+        }
+        let html = '<table><thead><tr><th>Tag</th><th>Name</th><th>Antwort</th><th>Zeitstempel</th></tr></thead><tbody>';
+        for(const s of subs){
+          html += `<tr><td>${s.day}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.answer)}</td><td>${s.ts}</td></tr>`;
+        }
+        html += '</tbody></table>';
+        submissionsTableWrap.innerHTML = html;
+      }
 
-clearData.addEventListener('click', ()=>{
-  if(!confirm('Wirklich alle lokalen Einsendungen löschen?')) return; localStorage.removeItem('advent_submissions'); localStorage.removeItem('advent_meta'); renderAdmin(); alert('Gelöscht.');
-});
+      downloadCsv.addEventListener('click', ()=> {
+        const subs = loadSubmissions();
+        if(!subs || subs.length === 0){ alert('Keine Einsendungen.'); return; }
+        const rows = [['day','name','answer','timestamp']];
+        subs.forEach(s => rows.push([s.day, s.name, s.answer, s.ts]));
+        const csv = rows.map(r => r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+        const blob = new Blob([csv], {type:'text/csv'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'submissions.csv'; document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+      });
 
-function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      clearData.addEventListener('click', ()=> {
+        if(!confirm('Wirklich alle lokalen Einsendungen löschen?')) return;
+        localStorage.removeItem('advent_submissions');
+        localStorage.removeItem('advent_meta');
+        renderAdmin();
+        alert('Gelöscht.');
+      });
 
-// init
-function init(){
-  // compute activeDay from real date if checked, otherwise use input value
-  if(useRealDate.checked){
-    activeDay = computeActiveDayFromDate();
-    activeDayInput.value = activeDay;
-    // disable manual editing if you prefer
-    activeDayInput.disabled = true;
-  } else {
-    activeDay = parseInt(activeDayInput.value,10) || 0;
-  }
-  renderGrid();
-  // mark previously submitted doors as opened
-  const prev = loadSubmissions(); for(const s of prev){ if(s && s.day) markDoorOpened(s.day); }
-}
+      function escapeHtml(s){
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      }
 
-activeDayInput.addEventListener('change', ()=>{
-  if(useRealDate.checked) return; activeDay = parseInt(activeDayInput.value,10) || 0; renderGrid(); });
-useRealDate.addEventListener('change', ()=>{ if(useRealDate.checked){ activeDay = computeActiveDayFromDate(); activeDayInput.value = activeDay; activeDayInput.disabled = true; } else { activeDayInput.disabled = false; } renderGrid(); });
+      // Init with robust error handling
+      function init(){
+        try {
+          if(useRealDate.checked){
+            activeDay = computeActiveDayFromDate();
+            activeDayInput.value = activeDay;
+            activeDayInput.disabled = true;
+          } else {
+            activeDay = parseInt(activeDayInput.value, 10) || 0;
+            activeDayInput.disabled = false;
+          }
+          renderGrid();
+          console.info('Kalender initialisiert. activeDay =', activeDay);
+        } catch(err){
+          console.error('Fehler bei Init:', err);
+          // minimaler Fallback: setze activeDay aus input und rendere
+          try {
+            activeDay = parseInt(activeDayInput.value, 10) || 0;
+            renderGrid();
+            console.info('Fallback-Init durchgeführt. activeDay =', activeDay);
+          } catch(err2){
+            console.error('Fallback-Init fehlgeschlagen:', err2);
+          }
+        }
+      }
 
-init();
+      // UI listeners
+      activeDayInput.addEventListener('change', ()=> {
+        if(useRealDate.checked) return;
+        activeDay = parseInt(activeDayInput.value, 10) || 0;
+        renderGrid();
+      });
 
-</script>
+      useRealDate.addEventListener('change', ()=> {
+        if(useRealDate.checked){
+          activeDay = computeActiveDayFromDate();
+          activeDayInput.value = activeDay;
+          activeDayInput.disabled = true;
+        } else {
+          activeDayInput.disabled = false;
+          activeDay = parseInt(activeDayInput.value, 10) || 0;
+        }
+        renderGrid();
+      });
+
+      // finally start
+      init();
+
+      // expose a tiny debug helper in dev console (optional)
+      window.__advent_debug = {
+        renderGrid, computeActiveDayFromDate, loadSubmissions
+      };
+    })();
+  </script>
 </body>
 </html>
