@@ -6,10 +6,8 @@
   <title>Rätsel-Adventskalender</title>
   <style>
     :root{
-      /* Tür-Größe anpassen */
       --door-size:56px;
       --door-gap:8px;
-      /* default: leere URL, wird durch JS gesetzt */
       --bg-url: url('');
     }
 
@@ -24,7 +22,6 @@
       transition: background-image 400ms ease-in-out;
     }
 
-    /* Page overlay & layout */
     .page {
       min-height:100%;
       box-sizing:border-box;
@@ -42,7 +39,6 @@
     button{padding:8px 12px;border-radius:8px;border:0;background:#2b6cff;color:white;cursor:pointer}
     button.secondary{background:#6b7280}
 
-    /* Spiel-Fläche: relative, damit Türen absolute positioniert werden */
     .playground {
       margin-top:18px;
       width:100%;
@@ -57,7 +53,6 @@
       box-shadow: 0 8px 28px rgba(0,0,0,0.45);
     }
 
-    /* Festliche Türchen */
     .door {
       width: var(--door-size);
       height: var(--door-size);
@@ -123,7 +118,6 @@
       top: 8%;
     }
 
-    /* Puzzle-Box und Admin */
     #puzzleBox{
       margin-top:14px;padding:12px;border-radius:10px;background: rgba(255,255,255,0.98);max-width:920px;border:1px solid #dfe7f6;z-index:6;
     }
@@ -192,11 +186,10 @@
 (async function(){
 
   // ----- Konfiguration ----- //
-  const BG_BASENAME = './Weihnachten'; // Basisname ohne Endung (du sagtest: Datei heißt "Weihnachten" im Repo root)
-  const BG_EXTS = ['.jpg','.png','.jpeg','.webp','']; // prüfe gängige Endungen, dann ohne Endung
+  const BG_BASENAME = './Weihnachten';
+  const BG_EXTS = ['.jpg','.png','.jpeg','.webp',''];
   const FALLBACK_BG = 'https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=1400&q=80';
 
-  // Elemente
   const playground = document.getElementById('playground');
   const activeDayInput = document.getElementById('activeDayInput');
   const useRealDate = document.getElementById('useRealDate');
@@ -216,15 +209,12 @@
   const closeAdmin = document.getElementById('closeAdmin');
   const submissionsTableWrap = document.getElementById('submissionsTableWrap');
 
-  // Größen
   const DOOR_SIZE = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--door-size')) || 56;
 
-  // ----- Helper: finde funktionierende Bild-URL ----- //
   async function findBackgroundUrl(){
     for(const ext of BG_EXTS){
       const candidate = BG_BASENAME + ext;
       try {
-        // try HEAD first (faster), fallback to GET if server doesn't allow HEAD
         const head = await fetch(candidate, { method: 'HEAD', cache: 'no-cache' });
         if(head && head.ok) return candidate;
       } catch(e){
@@ -236,14 +226,12 @@
         }
       }
     }
-    // fallback
     return FALLBACK_BG;
   }
 
-  // setze CSS-Variable --bg-url
   try {
     const bg = await findBackgroundUrl();
-    const url = bg.startsWith('http') ? bg : bg; // candidate path or absolute url
+    const url = bg.startsWith('http') ? bg : bg;
     document.documentElement.style.setProperty('--bg-url', `url('${url}')`);
     console.info('Hintergrund gesetzt auf:', url);
   } catch(err){
@@ -251,7 +239,6 @@
     console.warn('Fehler beim Laden des Hintergrunds, Fallback genutzt.', err);
   }
 
-  // ----- Funktionalität Kalender ----- //
   function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
   function computeActiveDayFromDate(){
     const now = new Date();
@@ -268,7 +255,6 @@
   function loadMeta(){ try{ return JSON.parse(localStorage.getItem('advent_meta')||'{}') }catch(e){return{}} }
   function saveMeta(obj){ localStorage.setItem('advent_meta', JSON.stringify(obj)) }
 
-  // generatePositions: non-overlapping positions for count items inside playground
   function generatePositions(count){
     const rect = playground.getBoundingClientRect();
     const padding = 8;
@@ -303,7 +289,7 @@
     return positions;
   }
 
-  let currentDoors = []; // {day, el}
+  let currentDoors = [];
 
   function renderDoors(){
     playground.innerHTML = '';
@@ -323,11 +309,12 @@
 
     const count = Math.min(24, Math.max(0, activeDay));
     const positions = generatePositions(count);
-    const nums = [];
-    for(let i=1;i<=24;i++) nums.push(i);
-    shuffle(nums);
-    const doorsToShow = nums.slice(0, count);
 
+    // Important change: show doors 1..count (not random selection)
+    const doorsToShow = [];
+    for(let d=1; d<=count; d++) doorsToShow.push(d);
+    // shuffle positions only so numbers are randomly placed
+    // positions array is already random by generation
     for(let i=0;i<doorsToShow.length;i++){
       const day = doorsToShow[i];
       const pos = positions[i];
@@ -342,7 +329,6 @@
       currentDoors.push({day, el});
     }
 
-    // mark opened from storage
     const subs = loadSubmissions();
     subs.forEach(s => { if(s && s.day) markDoorOpened(s.day); });
   }
@@ -352,7 +338,6 @@
     showPuzzleForDay(day);
   }
 
-  // load ./doors/<day>.html
   async function showPuzzleForDay(day){
     puzzleTitle.textContent = 'Rätsel — Tag ' + day;
     puzzleContent.innerHTML = '<em>Lädt Inhalt...</em>';
@@ -377,7 +362,6 @@
     if(entry) entry.el.classList.add('opened');
   }
 
-  // Save reply
   saveBtn.addEventListener('click', ()=> {
     const name = nameField.value.trim();
     const answer = answerField.value.trim();
@@ -393,7 +377,6 @@
     markDoorOpened(day);
   });
 
-  // Admin local
   adminBtn.addEventListener('click', ()=> {
     const p = prompt('Admin öffnen — Passwort? (Standard: admin)');
     if(p===null) return;
@@ -431,7 +414,6 @@
 
   function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  // Init
   function init(){
     if(useRealDate.checked){
       activeDay = computeActiveDayFromDate();
@@ -441,7 +423,6 @@
       activeDay = parseInt(activeDayInput.value,10) || 0;
       activeDayInput.disabled = false;
     }
-    // slight delay ensures playground has size
     setTimeout(()=> renderDoors(), 60);
     window.addEventListener('resize', ()=> { setTimeout(()=> renderDoors(), 120); });
   }
@@ -463,10 +444,8 @@
     renderDoors();
   });
 
-  // Start
   init();
 
-  // Expose debug helpers
   window.__advent = { renderDoors, computeActiveDayFromDate, loadSubmissions };
 })();
 </script>
