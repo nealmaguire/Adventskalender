@@ -1,303 +1,270 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Rätsel-Adventskalender — Starter</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rätsel-Adventskalender</title>
   <style>
-    :root{--gap:10px;--door-size:96px}
-    html,body{height:100%;}
-    body{
-      font-family:Inter,system-ui,Arial,sans-serif;margin:0;padding:18px;color:#111;
-      background-image: url('https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=1400&q=80');
-      background-size:cover;background-position:center center;background-attachment:fixed;
+    :root{
+      --door-size:56px;
+      --bg-url: url('');
     }
-    .overlay{background:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.35));min-height:100%;padding:18px;border-radius:8px}
-    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-    h1{font-size:1.2rem;margin:0;color:#fff}
-    .controls{display:flex;gap:8px;align-items:center}
-    input[type="number"]{width:64px;padding:6px}
 
-    .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--gap);max-width:920px;margin-top:18px}
+    html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif}
+    body{
+      background-image: var(--bg-url);
+      background-size: cover;
+      background-position: center center;
+      background-attachment: fixed;
+      background-color:#0b1220;
+      color:#111;
+      transition: background-image 400ms ease-in-out;
+    }
 
-    /* Tür-Optik: nur eine Nummer in der Mitte */
-    .door{
-      height:var(--door-size);display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#b71c1c,#e53935);border-radius:12px;border:2px solid rgba(255,209,102,0.95);cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,0.45);font-weight:900;color:white;position:relative;overflow:visible}
-    .door.locked{display:none}
-    .door.opened{background:linear-gradient(180deg,#2e7d32,#66bb6a)}
-    .door-number{font-size:1.6rem;line-height:1;display:inline-block;padding:0;margin:0}
-
-    /* door-clone used for open-through-door animation */
-    .door-clone{position:fixed;left:0;top:0;width:var(--door-size);height:var(--door-size);border-radius:12px;background:linear-gradient(180deg,#b71c1c,#e53935);box-shadow:0 18px 40px rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900}
-
-    #puzzleBox{margin-top:18px;padding:12px;border-radius:8px;background:rgba(255,255,255,0.95);border:1px solid #e0e6f0;max-width:920px;z-index:6;position:relative}
-    label{display:block;margin:8px 0}
-    input[type=text], textarea{width:100%;padding:8px;border:1px solid #ccd5ea;border-radius:6px}
+    .page{min-height:100%;box-sizing:border-box;padding:18px;background:linear-gradient(rgba(0,0,0,0.25),rgba(0,0,0,0.18));position:relative;z-index:1}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    h1{margin:0;color:#fff;font-size:1.15rem}
+    .controls{display:flex;gap:8px;align-items:center;color:#fff}
+    .controls label{display:flex;align-items:center;gap:6px;font-size:0.95rem}
+    input[type="number"]{width:72px;padding:6px;border-radius:6px;border:1px solid #ccc}
+    input[type="checkbox"]{transform:scale(1.05)}
     button{padding:8px 12px;border-radius:8px;border:0;background:#2b6cff;color:white;cursor:pointer}
     button.secondary{background:#6b7280}
-    table{border-collapse:collapse;width:100%;margin-top:12px}
-    table th, table td{border:1px solid #e6e9f2;padding:6px;text-align:left}
-    .top-right{font-size:0.9rem;color:#fff}
-    .note{color:#fff;font-size:0.95rem}
 
-    @media (max-width:720px){:root{--door-size:72px}.grid{grid-template-columns:repeat(3,1fr)}}
+    .playground{margin-top:18px;width:100%;max-width:1200px;height:62vh;min-height:360px;border-radius:10px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));box-shadow:0 8px 28px rgba(0,0,0,0.45)}
+
+    /* Door style: single centered number */
+    .door{
+      width:var(--door-size);
+      height:var(--door-size);
+      border-radius:12px;
+      position:absolute;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:1rem;
+      color:#fff;
+      cursor:pointer;
+      user-select:none;
+      z-index:20;
+      background:linear-gradient(145deg,#b71c1c 0%,#e53935 50%,#ffb703 100%);
+      border:2px solid rgba(255,209,102,0.95);
+      box-shadow:0 10px 30px rgba(0,0,0,0.45), inset 0 -6px 12px rgba(0,0,0,0.12);
+      text-shadow:0 2px 0 rgba(0,0,0,0.45);
+      transition:transform 220ms cubic-bezier(.2,.9,.3,1),box-shadow 220ms,filter 220ms;
+      overflow:visible;
+    }
+    .door-number{font-size:1.15rem;line-height:1;margin:0;padding:0}
+    .door.opened{background:linear-gradient(145deg,#2e7d32 0%,#66bb6a 50%,#ffd54f 100%);border-color:rgba(255,236,179,0.98)}
+
+    /* clone for open-through-door animation */
+    .door-clone{position:fixed;left:0;top:0;width:var(--door-size);height:var(--door-size);border-radius:12px;background:linear-gradient(145deg,#b71c1c 0%,#e53935 50%,#ffb703 100%);box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900}
+
+    #puzzleBox{margin-top:14px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.98);max-width:920px;border:1px solid #dfe7f6;z-index:6}
+    input[type=text],textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccd5ea}
+    table{border-collapse:collapse;width:100%;margin-top:12px}
+    table th,table td{border:1px solid #e6e9f2;padding:6px;text-align:left}
+    @media (max-width:720px){:root{--door-size:48px}.playground{height:50vh}}
   </style>
 </head>
 <body>
-  <div class="overlay">
-  <header>
-    <div>
-      <h1>Rätsel-Adventskalender — Starter</h1>
-      <div class="note">Die Türchen erscheinen täglich ab dem 1. Dezember. Vor dem 1.12. sind keine Türchen sichtbar.</div>
-    </div>
-    <div class="controls top-right">
-      <label style="display:flex;align-items:center;gap:8px;color:#fff">
-        Aktiver Tag
-        <input id="activeDayInput" type="number" min="0" max="24" value="0" title="0-24" />
-      </label>
-      <label style="display:flex;align-items:center;gap:6px;color:#fff">
-        <input id="useRealDate" type="checkbox" checked /> Echt-Datum
-      </label>
-      <button id="adminBtn" class="secondary">Admin</button>
-    </div>
-  </header>
-
-  <main>
-    <div id="gridContainer">
-      <div class="grid" id="grid"></div>
-    </div>
-
-    <div id="puzzleBox" style="display:none">
-      <h3 id="puzzleTitle">Rätsel</h3>
-      <div id="puzzleContent">Platzhalter für Rätsel (Text, Bild, Audio, Link etc.).</div>
-
-      <label>Dein Name (sichtbar):
-        <input id="nameField" type="text" placeholder="z. B. Anna" />
-      </label>
-      <label>Antwort (optional):
-        <textarea id="answerField" rows="3" placeholder="Antwort eingeben..."></textarea>
-      </label>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="saveBtn">Absenden</button>
-        <button id="closeBtn" class="secondary">Schließen</button>
-        <div id="saveMsg" style="color:green;margin-left:8px"></div>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Rätsel-Adventskalender</h1>
+        <div style="color:#fff;font-size:0.95rem;margin-top:6px">Türchen schalten ab dem 1.12. frei. Für Vorschau: „Echt-Datum“ aus und setze den Aktiven Tag.</div>
       </div>
-    </div>
 
-    <div id="adminPanel" style="display:none;margin-top:12px">
-      <h3 style="color:#fff">Admin — Einsendungen</h3>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button id="downloadCsv">CSV herunterladen</button>
-        <button id="clearData" class="secondary">Alles löschen</button>
-        <button id="closeAdmin" class="secondary">Schließen</button>
+      <div class="controls">
+        <label>Aktiver Tag
+          <input id="activeDayInput" type="number" min="0" max="24" value="0" />
+        </label>
+        <label title="Wenn aktiv: verwendet die Seite das lokale Datum">
+          <input id="useRealDate" type="checkbox" checked /> Echt-Datum
+        </label>
+        <button id="adminBtn" class="secondary">Admin</button>
       </div>
-      <div id="submissionsTableWrap"></div>
-    </div>
-  </main>
+    </header>
+
+    <main>
+      <div id="playground" class="playground" aria-live="polite"></div>
+
+      <div id="puzzleBox" style="display:none">
+        <h3 id="puzzleTitle">Rätsel</h3>
+        <div id="puzzleContent">Hier wird die Datei geladen (z. B. <code>doors/1.html</code>).</div>
+
+        <label>Dein Name (sichtbar):
+          <input id="nameField" type="text" placeholder="z. B. Anna" />
+        </label>
+        <label>Antwort (optional):
+          <textarea id="answerField" rows="3" placeholder="Antwort eingeben..."></textarea>
+        </label>
+
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+          <button id="saveBtn">Absenden</button>
+          <button id="closeBtn" class="secondary">Schließen</button>
+          <div id="saveMsg" style="color:green;margin-left:8px"></div>
+        </div>
+      </div>
+
+      <div id="adminPanel" style="display:none;margin-top:12px">
+        <h3>Admin — Einsendungen</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button id="downloadCsv">CSV herunterladen</button>
+          <button id="clearData" class="secondary">Alles löschen</button>
+          <button id="closeAdmin" class="secondary">Schließen</button>
+        </div>
+        <div id="submissionsTableWrap"></div>
+      </div>
+    </main>
   </div>
 
 <script>
-// ------------------ Advent prototype (fixed numbers + open-through animation) ------------------
-const GRID = document.getElementById('grid');
-const activeDayInput = document.getElementById('activeDayInput');
-const useRealDate = document.getElementById('useRealDate');
-const puzzleBox = document.getElementById('puzzleBox');
-const puzzleTitle = document.getElementById('puzzleTitle');
-const puzzleContent = document.getElementById('puzzleContent');
-const nameField = document.getElementById('nameField');
-const answerField = document.getElementById('answerField');
-const saveBtn = document.getElementById('saveBtn');
-const closeBtn = document.getElementById('closeBtn');
-const saveMsg = document.getElementById('saveMsg');
-const adminBtn = document.getElementById('adminBtn');
-const adminPanel = document.getElementById('adminPanel');
-const submissionsTableWrap = document.getElementById('submissionsTableWrap');
-const downloadCsv = document.getElementById('downloadCsv');
-const clearData = document.getElementById('clearData');
-const closeAdmin = document.getElementById('closeAdmin');
+(async function(){
+  const BG_BASENAME = './Weihnachten';
+  const BG_EXTS = ['.jpg','.png','.jpeg','.webp',''];
+  const FALLBACK_BG = 'https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=1400&q=80';
 
-let activeDay = 0;
-let openedDay = null;
+  const playground = document.getElementById('playground');
+  const activeDayInput = document.getElementById('activeDayInput');
+  const useRealDate = document.getElementById('useRealDate');
+  const puzzleBox = document.getElementById('puzzleBox');
+  const puzzleTitle = document.getElementById('puzzleTitle');
+  const puzzleContent = document.getElementById('puzzleContent');
+  const nameField = document.getElementById('nameField');
+  const answerField = document.getElementById('answerField');
+  const saveBtn = document.getElementById('saveBtn');
+  const closeBtn = document.getElementById('closeBtn');
+  const saveMsg = document.getElementById('saveMsg');
 
-function computeActiveDayFromDate(){
-  const now = new Date();
-  const year = now.getFullYear();
-  const dec1 = new Date(year,11,1,0,0,0);
-  const dec24 = new Date(year,11,24,23,59,59);
-  if(now < dec1) return 0;
-  if(now > dec24) return 24;
-  return Math.min(24, now.getDate());
-}
+  const adminBtn = document.getElementById('adminBtn');
+  const adminPanel = document.getElementById('adminPanel');
+  const downloadCsv = document.getElementById('downloadCsv');
+  const clearData = document.getElementById('clearData');
+  const closeAdmin = document.getElementById('closeAdmin');
+  const submissionsTableWrap = document.getElementById('submissionsTableWrap');
 
-function shuffle(array){
-  for(let i=array.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
+  const DOOR_SIZE = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--door-size')) || 56;
 
-function renderGrid(){
-  GRID.innerHTML = '';
-  if(activeDay === 0){
-    const placeholder = document.createElement('div');
-    placeholder.style.gridColumn = '1/-1';
-    placeholder.style.color = '#fff';
-    placeholder.style.padding = '18px';
-    placeholder.innerHTML = '<strong>Die Türchen erscheinen am 1. Dezember.</strong>';
-    GRID.appendChild(placeholder);
-    return;
-  }
-
-  // numbers 1..24 in order (we'll only show 1..activeDay)
-  const nums = [];
-  for(let d=1; d<=24; d++) nums.push(d);
-  // shuffle positions array to place numbers randomly in grid cells
-  const positions = shuffle(nums.slice());
-
-  for(let i=0; i<nums.length; i++){
-    const day = nums[i];
-    const el = document.createElement('div');
-    el.className = 'door';
-    // place the single centered number
-    el.innerHTML = `<span class="door-number">${day}</span>`;
-    el.dataset.day = day;
-    // if locked, hide entirely
-    if(day <= activeDay){
-      el.addEventListener('click', ()=> onDoorClick(day, el));
-    } else {
-      el.classList.add('locked');
+  async function findBackgroundUrl(){
+    for(const ext of BG_EXTS){
+      const candidate = BG_BASENAME + ext;
+      try{ const head = await fetch(candidate,{method:'HEAD',cache:'no-cache'}); if(head && head.ok) return candidate; }catch(e){
+        try{ const get = await fetch(candidate,{method:'GET',cache:'no-cache'}); if(get && get.ok) return candidate;}catch(e2){}
+      }
     }
-    GRID.appendChild(el);
+    return FALLBACK_BG;
   }
-}
+  try{ const bg = await findBackgroundUrl(); document.documentElement.style.setProperty('--bg-url', `url('${bg}')`); console.info('Hintergrund gesetzt auf:', bg);}catch(e){document.documentElement.style.setProperty('--bg-url', `url('${FALLBACK_BG}')`);} 
 
-function onDoorClick(day, el){
-  if(day > activeDay){ alert('Noch gesperrt.'); return; }
-  // open-through-door animation
-  animateDoorOpen(el, day);
-}
+  function loadSubmissions(){ try{ const raw=localStorage.getItem('advent_submissions'); return raw?JSON.parse(raw):[] }catch(e){return[]} }
+  function saveSubmissions(arr){ localStorage.setItem('advent_submissions', JSON.stringify(arr)) }
+  function loadMeta(){ try{return JSON.parse(localStorage.getItem('advent_meta')||'{}')}catch(e){return{}} }
+  function saveMeta(obj){ localStorage.setItem('advent_meta', JSON.stringify(obj)) }
 
-function animateDoorOpen(el, day){
-  // clone source element and animate to fullscreen, then show puzzle
-  const rect = el.getBoundingClientRect();
-  const clone = el.cloneNode(true);
-  clone.classList.add('door-clone');
-  // initial placement
-  clone.style.left = rect.left + 'px';
-  clone.style.top = rect.top + 'px';
-  clone.style.width = rect.width + 'px';
-  clone.style.height = rect.height + 'px';
-  clone.style.borderRadius = window.getComputedStyle(el).borderRadius;
-  document.body.appendChild(clone);
+  function computeActiveDayFromDate(){ const now=new Date(); const year=now.getFullYear(); const dec1=new Date(year,11,1,0,0,0); const dec24=new Date(year,11,24,23,59,59); if(now<dec1) return 0; if(now>dec24) return 24; return Math.min(24, now.getDate()); }
 
-  // target: center, large
-  const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-  const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-  const targetW = Math.max(vw * 0.9, vw);
-  const targetH = Math.max(vh * 0.9, vh);
-  const targetLeft = (vw - targetW) / 2;
-  const targetTop = (vh - targetH) / 2;
+  // deterministic PRNG
+  function mulberry32(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; } }
 
-  const anim = clone.animate([
-    { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px', transform: 'none' },
-    { left: targetLeft + 'px', top: targetTop + 'px', width: targetW + 'px', height: targetH + 'px', transform: 'none' }
-  ], { duration: 650, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' });
+  function generateDeterministicPositions(count){
+    const rect = playground.getBoundingClientRect();
+    const padding = 8;
+    const minX = padding; const minY = padding;
+    const maxX = Math.max(0, Math.floor(rect.width - DOOR_SIZE - padding));
+    const maxY = Math.max(0, Math.floor(rect.height - DOOR_SIZE - padding));
+    const positions = [];
 
-  anim.onfinish = ()=>{
-    // show puzzle and remove clone
-    showPuzzleForDay(day);
-    clone.remove();
-  };
-}
-
-function showPuzzleForDay(day){
-  puzzleTitle.textContent = `Rätsel — Tag ${day}`;
-  puzzleContent.innerHTML = `<p>Hier kannst du ein Rätsel, ein Bild oder einen Link für Tag ${day} einfügen.</p>`;
-  const meta = loadMeta(); if(meta && meta.lastName) nameField.value = meta.lastName;
-  answerField.value = '';
-  saveMsg.textContent = '';
-  puzzleBox.style.display = 'block';
-  window.scrollTo({top: puzzleBox.offsetTop - 20, behavior:'smooth'});
-}
-
-closeBtn.addEventListener('click', ()=>{ puzzleBox.style.display='none'; openedDay=null; });
-
-function loadSubmissions(){
-  try{ const raw = localStorage.getItem('advent_submissions'); if(!raw) return []; return JSON.parse(raw); }catch(e){ return []; }
-}
-function saveSubmissions(arr){ localStorage.setItem('advent_submissions', JSON.stringify(arr)); }
-function loadMeta(){ try{ return JSON.parse(localStorage.getItem('advent_meta')||'{}'); }catch(e){return{}}; }
-function saveMeta(obj){ localStorage.setItem('advent_meta', JSON.stringify(obj)); }
-
-saveBtn.addEventListener('click', ()=>{
-  const name = nameField.value.trim();
-  const ans = answerField.value.trim();
-  if(!name){ alert('Bitte Namen eingeben (sichtbar).'); return; }
-  const subs = loadSubmissions();
-  subs.push({ day: openedDay, name, answer: ans, ts: new Date().toISOString() });
-  saveSubmissions(subs);
-  saveMeta({ lastName: name });
-  saveMsg.textContent = 'Gespeichert ✓';
-  markDoorOpened(openedDay);
-});
-
-function markDoorOpened(day){
-  const el = GRID.querySelector(`[data-day="${day}"]`);
-  if(el) el.classList.add('opened');
-}
-
-adminBtn.addEventListener('click', ()=>{
-  const pass = prompt('Admin öffnen — Passwort? (Standard: "admin")');
-  if(pass === null) return;
-  if(pass !== 'admin') { alert('Falsches Passwort'); return; }
-  renderAdmin();
-  adminPanel.style.display = 'block';
-  window.scrollTo({top: adminPanel.offsetTop - 10, behavior:'smooth'});
-});
-
-closeAdmin.addEventListener('click', ()=>{ adminPanel.style.display = 'none'; });
-
-function renderAdmin(){
-  const subs = loadSubmissions();
-  if(subs.length === 0){ submissionsTableWrap.innerHTML = '<p style="color:#fff">Keine Einsendungen.</p>'; return; }
-  let html = '<table><thead><tr><th>Tag</th><th>Name</th><th>Antwort</th><th>Zeitstempel</th></tr></thead><tbody>';
-  for(const s of subs){ html += `<tr><td>${s.day}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.answer)}</td><td>${s.ts}</td></tr>`; }
-  html += '</tbody></table>';
-  submissionsTableWrap.innerHTML = html;
-}
-
-downloadCsv.addEventListener('click', ()=>{
-  const subs = loadSubmissions(); if(subs.length === 0){ alert('Keine Einsendungen.'); return; }
-  const rows = [['day','name','answer','timestamp']]; for(const s of subs) rows.push([s.day, s.name, s.answer, s.ts]);
-  const csv = rows.map(r => r.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(',' )).join('
-');
-  const blob = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-});
-
-clearData.addEventListener('click', ()=>{
-  if(!confirm('Wirklich alle lokalen Einsendungen löschen?')) return; localStorage.removeItem('advent_submissions'); localStorage.removeItem('advent_meta'); renderAdmin(); alert('Gelöscht.');
-});
-
-function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-function init(){
-  if(useRealDate.checked){
-    activeDay = computeActiveDayFromDate();
-    activeDayInput.value = activeDay;
-    activeDayInput.disabled = true;
-  } else {
-    activeDay = parseInt(activeDayInput.value,10) || 0;
+    for(let day=1; day<=count; day++){
+      const seed = Math.floor((day * 9301) ^ (Math.floor(rect.width) << 5) ^ (Math.floor(rect.height) << 2));
+      const rnd = mulberry32(seed);
+      let tries = 0; let placed = false;
+      while(!placed && tries < 500){
+        const r1 = rnd(); const r2 = rnd();
+        const x = Math.floor(r1 * (maxX - minX + 1)) + minX;
+        const y = Math.floor(r2 * (maxY - minY + 1)) + minY;
+        const box = {x,y,w:DOOR_SIZE,h:DOOR_SIZE}; let ok = true;
+        for(const p of positions){ const pad = 6; if(!(box.x + box.w + pad < p.x || box.x > p.x + p.w + pad || box.y + box.h + pad < p.y || box.y > p.y + p.h + pad)){ ok = false; break; }}
+        if(ok){ positions.push(box); placed = true; break; }
+        tries++;
+      }
+      if(!placed){ const f = day / (count + 1); const x = Math.floor(minX + f * (maxX - minX)); const y = Math.floor(minY + f * (maxY - minY)); positions.push({x,y,w:DOOR_SIZE,h:DOOR_SIZE}); }
+    }
+    return positions;
   }
-  renderGrid();
-  const prev = loadSubmissions(); for(const s of prev){ if(s && s.day) markDoorOpened(s.day); }
-}
 
-activeDayInput.addEventListener('change', ()=>{ if(useRealDate.checked) return; activeDay = parseInt(activeDayInput.value,10) || 0; renderGrid(); });
-useRealDate.addEventListener('change', ()=>{ if(useRealDate.checked){ activeDay = computeActiveDayFromDate(); activeDayInput.value = activeDay; activeDayInput.disabled = true; } else { activeDayInput.disabled = false; } renderGrid(); });
+  let currentDoors = [];
 
-init();
+  function renderDoors(){
+    playground.innerHTML = '';
+    currentDoors = [];
+    if(activeDay === 0){ const ph = document.createElement('div'); ph.style.color='#fff'; ph.style.padding='18px'; ph.style.fontWeight='700'; ph.textContent='Die Türchen erscheinen ab dem 1. Dezember.'; ph.style.position='absolute'; ph.style.left='20px'; ph.style.top='20px'; playground.appendChild(ph); return; }
 
+    const count = Math.min(24, Math.max(0, activeDay));
+    const positions = generateDeterministicPositions(count);
+
+    for(let i=0;i<count;i++){
+      const day = i+1;
+      const pos = positions[i];
+      const el = document.createElement('button'); el.className='door'; el.dataset.day = day; el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px';
+      const num = document.createElement('span'); num.className='door-number'; num.textContent = day; el.appendChild(num);
+      el.addEventListener('click', ()=> animateDoorOpen(el, day));
+      playground.appendChild(el);
+      currentDoors.push({day,el});
+    }
+
+    const subs = loadSubmissions(); subs.forEach(s=>{ if(s && s.day) markDoorOpened(s.day); });
+  }
+
+  function animateDoorOpen(el, day){
+    if(day > activeDay){ alert('Noch gesperrt.'); return; }
+    const rect = el.getBoundingClientRect();
+    const clone = el.cloneNode(true);
+    clone.classList.add('door-clone'); document.body.appendChild(clone);
+    clone.style.left = rect.left + 'px'; clone.style.top = rect.top + 'px'; clone.style.width = rect.width + 'px'; clone.style.height = rect.height + 'px'; clone.style.borderRadius = getComputedStyle(el).borderRadius;
+    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0); const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    const targetW = Math.max(vw * 0.92, vw); const targetH = Math.max(vh * 0.92, vh);
+    const targetLeft = (vw - targetW)/2; const targetTop = (vh - targetH)/2;
+    const anim = clone.animate([
+      { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px', transform: 'none' },
+      { left: targetLeft + 'px', top: targetTop + 'px', width: targetW + 'px', height: targetH + 'px', transform: 'none' }
+    ], { duration: 650, easing: 'cubic-bezier(.2,.9,.3,1)', fill: 'forwards' });
+    anim.onfinish = ()=>{ showPuzzleForDay(day); clone.remove(); };
+  }
+
+  async function showPuzzleForDay(day){
+    puzzleTitle.textContent = 'Rätsel — Tag ' + day;
+    puzzleContent.innerHTML = '<em>Lädt Inhalt...</em>';
+    puzzleBox.style.display = 'block';
+    try{ const path = `./doors/${day}.html`; const resp = await fetch(path,{cache:'no-cache'}); if(!resp.ok) throw new Error('nicht gefunden'); const html = await resp.text(); puzzleContent.innerHTML = html; }catch(err){ puzzleContent.innerHTML = `<p>Für Tag ${day} ist noch keine Datei vorhanden.<br>Lege eine Datei <code>doors/${day}.html</code> ins Repo.</p>`; }
+    const meta = loadMeta(); if(meta && meta.lastName) nameField.value = meta.lastName; answerField.value = ''; saveMsg.textContent = '';
+    puzzleBox.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function markDoorOpened(day){ const en = currentDoors.find(x=>x.day==day); if(en) en.el.classList.add('opened'); }
+
+  saveBtn.addEventListener('click', ()=>{ const name = nameField.value.trim(); const answer = answerField.value.trim(); if(!name){ alert('Bitte Namen eingeben.'); return; } const m = puzzleTitle.textContent.match(/Tag\s+(\d+)/); const day = m?parseInt(m[1],10):null; if(!day){ alert('Kein Tag erkennbar.'); return; } const subs = loadSubmissions(); subs.push({day,name,answer,ts:new Date().toISOString()}); saveSubmissions(subs); saveMeta({lastName:name}); saveMsg.textContent='Gespeichert ✓'; markDoorOpened(day); });
+
+  adminBtn.addEventListener('click', ()=>{ const p = prompt('Admin öffnen — Passwort? (Standard: admin)'); if(p===null) return; if(p!=='admin'){ alert('Falsches Passwort'); return; } renderAdmin(); adminPanel.style.display='block'; adminPanel.scrollIntoView({behavior:'smooth', block:'center'}); });
+  closeAdmin.addEventListener('click', ()=>{ adminPanel.style.display='none'; });
+
+  function renderAdmin(){ const subs = loadSubmissions(); if(!subs || subs.length===0){ submissionsTableWrap.innerHTML='<p>Keine Einsendungen.</p>'; return; } let html='<table><thead><tr><th>Tag</th><th>Name</th><th>Antwort</th><th>Zeitstempel</th></tr></thead><tbody>'; for(const s of subs) html+=`<tr><td>${s.day}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.answer)}</td><td>${s.ts}</td></tr>`; html+='</tbody></table>'; submissionsTableWrap.innerHTML=html; }
+
+  downloadCsv.addEventListener('click', ()=>{ const subs = loadSubmissions(); if(!subs || subs.length===0){ alert('Keine Einsendungen.'); return; } const rows=[['day','name','answer','timestamp']]; subs.forEach(s=>rows.push([s.day,s.name,s.answer,s.ts])); const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\\n'); const b=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(b); const a=document.createElement('a'); a.href=url; a.download='submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
+
+  clearData.addEventListener('click', ()=>{ if(!confirm('Wirklich alle lokalen Einsendungen löschen?')) return; localStorage.removeItem('advent_submissions'); localStorage.removeItem('advent_meta'); renderAdmin(); alert('Gelöscht.'); });
+
+  function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function init(){ if(useRealDate.checked){ activeDay = computeActiveDayFromDate(); activeDayInput.value = activeDay; activeDayInput.disabled = true; } else { activeDay = parseInt(activeDayInput.value,10) || 0; activeDayInput.disabled = false; } setTimeout(()=> renderDoors(),60); window.addEventListener('resize', ()=>{ setTimeout(()=> renderDoors(),120); }); }
+
+  activeDayInput.addEventListener('change', ()=>{ if(useRealDate.checked) return; activeDay = parseInt(activeDayInput.value,10) || 0; renderDoors(); });
+  useRealDate.addEventListener('change', ()=>{ if(useRealDate.checked){ activeDay = computeActiveDayFromDate(); activeDayInput.value = activeDay; activeDayInput.disabled = true; } else { activeDayInput.disabled = false; activeDay = parseInt(activeDayInput.value,10) || 0; } renderDoors(); });
+
+  init();
+  window.__advent = { renderDoors, computeActiveDayFromDate, loadSubmissions };
+})();
 </script>
 </body>
 </html>
