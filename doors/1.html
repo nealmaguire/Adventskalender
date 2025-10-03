@@ -1,1 +1,88 @@
+<!-- doors/1.html -->
+<div style="font-family:Inter, system-ui, Arial, sans-serif; color:#111;">
+  <h2 style="margin-top:0;">🎁 Türchen 1</h2>
+
+  <!-- -------------------------------------------------------------------
+       ✱ Bild anzeigen
+       Setze hier den Pfad zu deinem Bild. Beispiel: ./doors/images/tuer1.jpg
+       Wenn du das Bild direkt in repo-root gelegt hast: ./tuer1.jpg
+  ------------------------------------------------------------------->
+  <div style="max-width:720px; margin-bottom:12px;">
+    <img id="door1img" src="./doors/images/tuer1.jpg" alt="Türchen 1 Bild" style="width:100%; height:auto; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.25);" />
+    <div style="margin-top:8px; font-size:0.95rem;">
+      <!-- Download-Link: das "download" Attribut fordert den Browser auf, die Datei herunterzuladen -->
+      <a id="door1download" href="./doors/images/tuer1.jpg" download style="text-decoration:none; background:#2b6cff; color:#fff; padding:8px 12px; border-radius:8px; display:inline-block;">
+        Bild herunterladen
+      </a>
+      <span style="margin-left:10px; color:#666; font-size:0.9rem;">(Rechtsklick → Bild speichern funktioniert auch)</span>
+    </div>
+  </div>
+
+  <div style="max-width:720px; background:#fff; padding:12px; border-radius:8px; box-shadow:0 4px 14px rgba(0,0,0,0.06);">
+    <label style="display:block; margin-bottom:8px; font-weight:600;">Name</label>
+    <input id="localName" type="text" placeholder="Dein Name (sichtbar)" style="width:100%; padding:10px; border-radius:6px; border:1px solid #d0d7ee; box-sizing:border-box;" />
+
+    <label style="display:block; margin:14px 0 8px; font-weight:600;">Wie viele Wörter sind in dieser Wortsuche versteckt, die mit mir zusammen hängen könnten?</label>
+    <input id="localCount" type="text" placeholder="Zahl als Antwort" style="width:100%; padding:10px; border-radius:6px; border:1px solid #d0d7ee; box-sizing:border-box;" />
+
+    <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
+      <!-- Inline-Handler: speichert direkt in localStorage (unabhängig von index.html) -->
+      <button
+        style="background:#16a34a; color:white; border:0; padding:10px 14px; border-radius:8px; cursor:pointer;"
+        onclick="(function(){
+          const name = document.getElementById('localName').value.trim();
+          const count = document.getElementById('localCount').value.trim();
+          if(!name){ alert('Bitte Name eingeben.'); return; }
+          if(!count){ if(!confirm('Du hast kein Ergebnis eingetragen — trotzdem speichern?')) return; }
+          try{
+            const key = 'advent_submissions';
+            const raw = localStorage.getItem(key);
+            const arr = raw ? JSON.parse(raw) : [];
+            arr.push({ day: 1, name: name, answer: String(count), ts: new Date().toISOString() });
+            localStorage.setItem(key, JSON.stringify(arr));
+            // sichtbare Rückmeldung (falls index.html das Feld #saveMsg hat)
+            const saveMsg = document.getElementById('saveMsg');
+            if(saveMsg) saveMsg.textContent = 'Gespeichert ✓';
+            alert('Antwort gespeichert. Danke! (Wird in der Admin-Liste erscheinen)');
+          }catch(e){
+            alert('Fehler beim Speichern: ' + e.message);
+          }
+        })()">
+        Absenden & speichern
+      </button>
+
+      <!-- Optional: Kopieren in die globalen Felder & Auslösen des Haupt-Absenden-Buttons
+           (funktioniert wenn index.html saveBtn vorhanden ist und openedDay gesetzt ist).
+           Nimm diese Schaltfläche, wenn du die Hauptseite zum Speichern verwenden willst. -->
+      <button
+        style="background:#2b6cff; color:white; border:0; padding:10px 14px; border-radius:8px; cursor:pointer;"
+        onclick="(function(){
+          const name = document.getElementById('localName').value.trim();
+          const count = document.getElementById('localCount').value.trim();
+          if(!name){ alert('Bitte Name eingeben.'); return; }
+          // kopiere in die globalen Felder (index.html)
+          const globalName = document.getElementById('nameField');
+          const globalAnswer = document.getElementById('answerField');
+          const globalSave = document.getElementById('saveBtn');
+          if(globalName && globalAnswer){
+            globalName.value = name;
+            globalAnswer.value = count;
+            // trigger main save button if vorhanden
+            if(globalSave) globalSave.click();
+            else alert('Haupt-Absenden-Button nicht gefunden — lokale Speicherung verwendet.');
+          } else {
+            alert('Hauptformular nicht gefunden. Verwende stattdessen "Absenden & speichern".');
+          }
+        })()">
+        In Hauptformular übernehmen & absenden
+      </button>
+
+      <div id="localSaveNotice" style="margin-left:12px;color:#555;font-size:0.95rem;">Deine Antwort wird lokal gespeichert.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:10px; color:#666; font-size:0.9rem;">
+    <strong>Tipp:</strong> Wenn das Bild nicht angezeigt wird, prüfe den Pfad. Er sollte relativ zur Datei `index.html` sein — z. B. <code>./doors/images/tuer1.jpg</code> oder <code>./tuer1.jpg</code>.
+  </div>
+</div>
 
