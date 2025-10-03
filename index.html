@@ -22,14 +22,7 @@
       transition: background-image 400ms ease-in-out;
     }
 
-    .page {
-      min-height:100%;
-      box-sizing:border-box;
-      padding:18px;
-      background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.18));
-      position: relative; z-index:1;
-    }
-
+    .page{min-height:100%;box-sizing:border-box;padding:18px;background:linear-gradient(rgba(0,0,0,0.25),rgba(0,0,0,0.18));position:relative;z-index:1}
     header{display:flex;justify-content:space-between;align-items:center;gap:12px}
     h1{margin:0;color:#fff;font-size:1.15rem}
     .controls{display:flex;gap:8px;align-items:center;color:#fff}
@@ -39,95 +32,26 @@
     button{padding:8px 12px;border-radius:8px;border:0;background:#2b6cff;color:white;cursor:pointer}
     button.secondary{background:#6b7280}
 
-    .playground {
-      margin-top:18px;
-      width:100%;
-      max-width:1200px;
-      height:62vh;
-      min-height:360px;
-      border-radius:10px;
-      position:relative;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,0.06);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
-      box-shadow: 0 8px 28px rgba(0,0,0,0.45);
-    }
+    .playground{margin-top:18px;width:100%;max-width:1200px;height:62vh;min-height:360px;border-radius:10px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.06);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));box-shadow:0 8px 28px rgba(0,0,0,0.45)}
 
-    .door {
-      width: var(--door-size);
-      height: var(--door-size);
-      border-radius: 12px;
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 1.0rem;
-      color: #fff;
-      cursor: pointer;
-      user-select: none;
-      z-index: 20;
-      background: linear-gradient(145deg, #b71c1c 0%, #e53935 50%, #ffb703 100%);
-      border: 2px solid rgba(255, 209, 102, 0.95);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 -6px 12px rgba(0,0,0,0.12);
-      text-shadow: 0 2px 0 rgba(0,0,0,0.45);
-      transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms, filter 220ms;
-      overflow: visible;
-    }
-    .door::before{
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: -12%;
-      transform: translateX(-50%);
-      width: 58%;
-      height: 12%;
-      border-radius: 6px;
-      background: linear-gradient(180deg, #8b0000 0%, #b22222 100%);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.35);
-      pointer-events: none;
-    }
-    .door::after{
-      content: '🎁';
-      position: absolute;
-      right: 6%;
-      top: 6%;
-      font-size: 0.95rem;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.45));
-      pointer-events: none;
-    }
-    @keyframes doorTwinkle {
-      0%   { box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
-      50%  { box-shadow: 0 18px 36px rgba(255,215,0,0.20); }
-      100% { box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
-    }
-    .door:hover{
-      transform: translateY(-8px) scale(1.06) rotate(-2deg);
-      animation: doorTwinkle 900ms ease-in-out;
-      z-index: 100;
-      filter: saturate(1.08);
-    }
-    .door.opened{
-      background: linear-gradient(145deg, #2e7d32 0%, #66bb6a 50%, #ffd54f 100%);
-      border-color: rgba(255, 236, 179, 0.98);
-    }
-    .door.opened::after{
-      content: '✔️';
-      font-size: 1.05rem;
-      right: 8%;
-      top: 8%;
-    }
+    /* Festliche Türchen mit Nummernschild (.num) */
+    .door{width:var(--door-size);height:var(--door-size);border-radius:12px;position:absolute;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#fff;cursor:pointer;user-select:none;z-index:20;background:linear-gradient(145deg,#b71c1c 0%,#e53935 50%,#ffb703 100%);border:2px solid rgba(255,209,102,0.95);box-shadow:0 10px 30px rgba(0,0,0,0.45), inset 0 -6px 12px rgba(0,0,0,0.12);text-shadow:0 2px 0 rgba(0,0,0,0.45);transition:transform 220ms cubic-bezier(.2,.9,.3,1),box-shadow 220ms,filter 220ms;overflow:visible}
+    .door::before{content:'';position:absolute;left:50%;top:-12%;transform:translateX(-50%);width:58%;height:12%;border-radius:6px;background:linear-gradient(180deg,#8b0000 0%,#b22222 100%);box-shadow:0 4px 8px rgba(0,0,0,0.35);pointer-events:none}
+    .door .num{position:absolute;left:6px;top:6px;background:rgba(255,255,255,0.95);color:#b71c1c;font-weight:800;padding:3px 7px;border-radius:6px;font-size:0.86rem;box-shadow:0 2px 6px rgba(0,0,0,0.3)}
+    .door .orn{position:absolute;right:6px;top:6px;font-size:0.9rem;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.45));pointer-events:none}
+    .door:hover{transform:translateY(-8px) scale(1.06) rotate(-2deg);animation:doorTwinkle 900ms ease-in-out;z-index:100;filter:saturate(1.08)}
+    @keyframes doorTwinkle{0%{box-shadow:0 10px 30px rgba(0,0,0,0.45)}50%{box-shadow:0 18px 36px rgba(255,215,0,0.20)}100%{box-shadow:0 10px 30px rgba(0,0,0,0.45)}}
+    .door.opened{background:linear-gradient(145deg,#2e7d32 0%,#66bb6a 50%,#ffd54f 100%);border-color:rgba(255,236,179,0.98)}
+    .door.opened .orn{content:'✔️';}
 
-    #puzzleBox{
-      margin-top:14px;padding:12px;border-radius:10px;background: rgba(255,255,255,0.98);max-width:920px;border:1px solid #dfe7f6;z-index:6;
-    }
-    input[type=text], textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccd5ea}
+    /* door-open animation: clone expands to fullscreen and reveals puzzleBox */
+    .door-clone{position:fixed;left:0;top:0;width:var(--door-size);height:var(--door-size);border-radius:12px;background:linear-gradient(145deg,#b71c1c 0%,#e53935 50%,#ffb703 100%);box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900}
+
+    #puzzleBox{margin-top:14px;padding:12px;border-radius:10px;background:rgba(255,255,255,0.98);max-width:920px;border:1px solid #dfe7f6;z-index:6}
+    input[type=text],textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccd5ea}
     table{border-collapse:collapse;width:100%;margin-top:12px}
-    table th, table td{border:1px solid #e6e9f2;padding:6px;text-align:left}
-    @media (max-width:720px){
-      :root{--door-size:48px}
-      .playground{height:50vh}
-    }
+    table th,table td{border:1px solid #e6e9f2;padding:6px;text-align:left}
+    @media (max-width:720px){:root{--door-size:48px}.playground{height:50vh}}
   </style>
 </head>
 <body>
@@ -135,7 +59,7 @@
     <header>
       <div>
         <h1>Rätsel-Adventskalender</h1>
-        <div style="color:#fff;font-size:0.95rem;margin-top:6px">Türchen schalten ab dem 1.12. frei. Für Vorschau: „Echt-Datum“ aus und Aktiven Tag setzen.</div>
+        <div style="color:#fff;font-size:0.95rem;margin-top:6px">Türchen schalten ab dem 1.12. frei. Vorschau: „Echt-Datum" aus und Aktiven Tag setzen.</div>
       </div>
 
       <div class="controls">
@@ -184,12 +108,12 @@
 
 <script>
 (async function(){
-
-  // ----- Konfiguration ----- //
+  // Konfig
   const BG_BASENAME = './Weihnachten';
   const BG_EXTS = ['.jpg','.png','.jpeg','.webp',''];
   const FALLBACK_BG = 'https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=1400&q=80';
 
+  // Elements
   const playground = document.getElementById('playground');
   const activeDayInput = document.getElementById('activeDayInput');
   const useRealDate = document.getElementById('useRealDate');
@@ -211,51 +135,31 @@
 
   const DOOR_SIZE = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--door-size')) || 56;
 
+  // find background
   async function findBackgroundUrl(){
     for(const ext of BG_EXTS){
       const candidate = BG_BASENAME + ext;
-      try {
-        const head = await fetch(candidate, { method: 'HEAD', cache: 'no-cache' });
-        if(head && head.ok) return candidate;
-      } catch(e){
-        try {
-          const get = await fetch(candidate, { method: 'GET', cache: 'no-cache' });
-          if(get && get.ok) return candidate;
-        } catch(e2){
-          // ignore
-        }
+      try{ const head = await fetch(candidate,{method:'HEAD',cache:'no-cache'}); if(head && head.ok) return candidate; }catch(e){
+        try{ const get = await fetch(candidate,{method:'GET',cache:'no-cache'}); if(get && get.ok) return candidate;}catch(e2){}
       }
     }
     return FALLBACK_BG;
   }
+  try{ const bg = await findBackgroundUrl(); document.documentElement.style.setProperty('--bg-url', `url('${bg}')`); console.info('Hintergrund gesetzt auf:', bg);}catch(e){document.documentElement.style.setProperty('--bg-url', `url('${FALLBACK_BG}')`);} 
 
-  try {
-    const bg = await findBackgroundUrl();
-    const url = bg.startsWith('http') ? bg : bg;
-    document.documentElement.style.setProperty('--bg-url', `url('${url}')`);
-    console.info('Hintergrund gesetzt auf:', url);
-  } catch(err){
-    document.documentElement.style.setProperty('--bg-url', `url('${FALLBACK_BG}')`);
-    console.warn('Fehler beim Laden des Hintergrunds, Fallback genutzt.', err);
-  }
-
-  function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
-  function computeActiveDayFromDate(){
-    const now = new Date();
-    const year = now.getFullYear();
-    const dec1 = new Date(year,11,1,0,0,0);
-    const dec24 = new Date(year,11,24,23,59,59);
-    if(now < dec1) return 0;
-    if(now > dec24) return 24;
-    return Math.min(24, now.getDate());
-  }
-
-  function loadSubmissions(){ try{ const raw=localStorage.getItem('advent_submissions'); return raw?JSON.parse(raw):[] }catch(e){return[]}}
+  // storage
+  function loadSubmissions(){ try{ const raw=localStorage.getItem('advent_submissions'); return raw?JSON.parse(raw):[] }catch(e){return[]} }
   function saveSubmissions(arr){ localStorage.setItem('advent_submissions', JSON.stringify(arr)) }
-  function loadMeta(){ try{ return JSON.parse(localStorage.getItem('advent_meta')||'{}') }catch(e){return{}} }
+  function loadMeta(){ try{return JSON.parse(localStorage.getItem('advent_meta')||'{}')}catch(e){return{}} }
   function saveMeta(obj){ localStorage.setItem('advent_meta', JSON.stringify(obj)) }
 
-  function generatePositions(count){
+  function computeActiveDayFromDate(){ const now=new Date(); const year=now.getFullYear(); const dec1=new Date(year,11,1,0,0,0); const dec24=new Date(year,11,24,23,59,59); if(now<dec1) return 0; if(now>dec24) return 24; return Math.min(24, now.getDate()); }
+
+  // Deterministic PRNG (mulberry32) using seed
+  function mulberry32(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; } }
+
+  // Deterministic positions (one per day) - non-overlap attempted deterministically
+  function generateDeterministicPositions(count){
     const rect = playground.getBoundingClientRect();
     const padding = 8;
     const minX = padding;
@@ -263,28 +167,24 @@
     const maxX = Math.max(0, Math.floor(rect.width - DOOR_SIZE - padding));
     const maxY = Math.max(0, Math.floor(rect.height - DOOR_SIZE - padding));
     const positions = [];
-    const maxTries = 1500;
 
-    for(let i=0;i<count;i++){
+    for(let day=1; day<=count; day++){
+      const seed = Math.floor((day * 9301) ^ (Math.floor(rect.width) << 5) ^ (Math.floor(rect.height) << 2));
+      const rnd = mulberry32(seed);
       let tries = 0;
       let placed = false;
-      while(!placed && tries < maxTries){
-        const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-        const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+      while(!placed && tries < 500){
+        const r1 = rnd();
+        const r2 = rnd();
+        const x = Math.floor(r1 * (maxX - minX + 1)) + minX;
+        const y = Math.floor(r2 * (maxY - minY + 1)) + minY;
         const box = {x,y,w:DOOR_SIZE,h:DOOR_SIZE};
         let ok = true;
-        for(const p of positions){
-          const pad = 6;
-          if(!(box.x + box.w + pad < p.x || box.x > p.x + p.w + pad || box.y + box.h + pad < p.y || box.y > p.y + p.h + pad)){
-            ok = false; break;
-          }
-        }
-        if(ok){ positions.push(box); placed = true; }
+        for(const p of positions){ const pad = 6; if(!(box.x + box.w + pad < p.x || box.x > p.x + p.w + pad || box.y + box.h + pad < p.y || box.y > p.y + p.h + pad)){ ok = false; break; }}
+        if(ok){ positions.push(box); placed = true; break; }
         tries++;
       }
-      if(!placed){
-        positions.push({x: Math.floor(Math.random()*(maxX-minX+1))+minX, y: Math.floor(Math.random()*(maxY-minY+1))+minY, w:DOOR_SIZE, h:DOOR_SIZE});
-      }
+      if(!placed){ const f = day / (count + 1); const x = Math.floor(minX + f * (maxX - minX)); const y = Math.floor(minY + f * (maxY - minY)); positions.push({x,y,w:DOOR_SIZE,h:DOOR_SIZE}); }
     }
     return positions;
   }
@@ -294,158 +194,79 @@
   function renderDoors(){
     playground.innerHTML = '';
     currentDoors = [];
-    if(activeDay === 0){
-      const ph = document.createElement('div');
-      ph.style.color = '#fff';
-      ph.style.padding = '18px';
-      ph.style.fontWeight = '700';
-      ph.textContent = 'Die Türchen erscheinen ab dem 1. Dezember.';
-      ph.style.position='absolute';
-      ph.style.left='20px';
-      ph.style.top='20px';
-      playground.appendChild(ph);
-      return;
-    }
+    if(activeDay === 0){ const ph = document.createElement('div'); ph.style.color='#fff'; ph.style.padding='18px'; ph.style.fontWeight='700'; ph.textContent='Die Türchen erscheinen ab dem 1. Dezember.'; ph.style.position='absolute'; ph.style.left='20px'; ph.style.top='20px'; playground.appendChild(ph); return; }
 
     const count = Math.min(24, Math.max(0, activeDay));
-    const positions = generatePositions(count);
-
-    // Important change: show doors 1..count (not random selection)
-    const doorsToShow = [];
-    for(let d=1; d<=count; d++) doorsToShow.push(d);
-    // shuffle positions only so numbers are randomly placed
-    // positions array is already random by generation
-    for(let i=0;i<doorsToShow.length;i++){
-      const day = doorsToShow[i];
+    const positions = generateDeterministicPositions(count);
+    for(let i=0;i<count;i++){
+      const day = i+1;
       const pos = positions[i];
-      const el = document.createElement('button');
-      el.className = 'door';
-      el.textContent = day;
-      el.dataset.day = day;
-      el.style.left = pos.x + 'px';
-      el.style.top = pos.y + 'px';
-      el.addEventListener('click', ()=> openDoor(day, el));
+      const el = document.createElement('button'); el.className='door'; el.dataset.day = day; el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px';
+      const num = document.createElement('span'); num.className='num'; num.textContent = day; el.appendChild(num);
+      const o = document.createElement('span'); o.className='orn'; o.textContent='🎁'; el.appendChild(o);
+      el.addEventListener('click', ()=> animateDoorOpen(el, day));
       playground.appendChild(el);
-      currentDoors.push({day, el});
+      currentDoors.push({day,el});
     }
-
-    const subs = loadSubmissions();
-    subs.forEach(s => { if(s && s.day) markDoorOpened(s.day); });
+    const subs = loadSubmissions(); subs.forEach(s=>{ if(s && s.day) markDoorOpened(s.day); });
   }
 
-  function openDoor(day, el){
+  // animation: clone door and expand to fullscreen, then open puzzle
+  function animateDoorOpen(el, day){
     if(day > activeDay){ alert('Noch gesperrt.'); return; }
-    showPuzzleForDay(day);
+    const rect = el.getBoundingClientRect();
+    const clone = el.cloneNode(true);
+    clone.classList.add('door-clone');
+    document.body.appendChild(clone);
+    clone.style.left = rect.left + 'px';
+    clone.style.top = rect.top + 'px';
+    clone.style.width = rect.width + 'px';
+    clone.style.height = rect.height + 'px';
+    clone.style.borderRadius = getComputedStyle(el).borderRadius;
+    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    const targetW = Math.max(vw * 0.9, vw); const targetH = Math.max(vh * 0.9, vh);
+    const targetLeft = (vw - targetW)/2; const targetTop = (vh - targetH)/2;
+    const anim = clone.animate([
+      {transform: 'none', left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px', borderRadius: getComputedStyle(el).borderRadius},
+      {transform: 'none', left: targetLeft + 'px', top: targetTop + 'px', width: targetW + 'px', height: targetH + 'px', borderRadius: '8px'}
+    ], {duration:700, easing:'cubic-bezier(.2,.9,.3,1)', fill:'forwards'});
+
+    anim.onfinish = ()=>{ showPuzzleForDay(day); clone.remove(); };
   }
 
   async function showPuzzleForDay(day){
     puzzleTitle.textContent = 'Rätsel — Tag ' + day;
     puzzleContent.innerHTML = '<em>Lädt Inhalt...</em>';
     puzzleBox.style.display = 'block';
-    try {
-      const path = `./doors/${day}.html`;
-      const resp = await fetch(path, {cache:'no-cache'});
-      if(!resp.ok) throw new Error('nicht gefunden');
-      const html = await resp.text();
-      puzzleContent.innerHTML = html;
-    } catch(err){
-      puzzleContent.innerHTML = `<p>Für Tag ${day} ist noch keine Datei vorhanden.<br>Lege eine Datei <code>doors/${day}.html</code> ins Repo.</p>`;
-    }
-    const meta = loadMeta(); if(meta && meta.lastName) nameField.value = meta.lastName;
-    answerField.value = '';
-    saveMsg.textContent = '';
+    try{ const path = `./doors/${day}.html`; const resp = await fetch(path,{cache:'no-cache'}); if(!resp.ok) throw new Error('nicht gefunden'); const html = await resp.text(); puzzleContent.innerHTML = html; }catch(e){ puzzleContent.innerHTML = `<p>Für Tag ${day} ist noch keine Datei vorhanden.<br>Lege eine Datei <code>doors/${day}.html</code> ins Repo.</p>`; }
+    const meta = loadMeta(); if(meta && meta.lastName) nameField.value = meta.lastName; answerField.value = ''; saveMsg.textContent = '';
     puzzleBox.scrollIntoView({behavior:'smooth', block:'center'});
   }
 
-  function markDoorOpened(day){
-    const entry = currentDoors.find(x=>x.day==day);
-    if(entry) entry.el.classList.add('opened');
-  }
+  function markDoorOpened(day){ const en = currentDoors.find(x=>x.day==day); if(en) en.el.classList.add('opened'); }
 
-  saveBtn.addEventListener('click', ()=> {
-    const name = nameField.value.trim();
-    const answer = answerField.value.trim();
-    if(!name){ alert('Bitte Namen eingeben.'); return; }
-    const m = puzzleTitle.textContent.match(/Tag\s+(\d+)/);
-    const day = m?parseInt(m[1],10):null;
-    if(!day){ alert('Kein Tag erkennbar.'); return; }
-    const subs = loadSubmissions();
-    subs.push({day, name, answer, ts: new Date().toISOString()});
-    saveSubmissions(subs);
-    saveMeta({lastName: name});
-    saveMsg.textContent = 'Gespeichert ✓';
-    markDoorOpened(day);
-  });
+  // Save reply
+  saveBtn.addEventListener('click', ()=>{ const name = nameField.value.trim(); const answer = answerField.value.trim(); if(!name){ alert('Bitte Namen eingeben.'); return; } const m = puzzleTitle.textContent.match(/Tag\s+(\d+)/); const day = m?parseInt(m[1],10):null; if(!day){ alert('Kein Tag erkennbar.'); return; } const subs = loadSubmissions(); subs.push({day,name,answer,ts:new Date().toISOString()}); saveSubmissions(subs); saveMeta({lastName:name}); saveMsg.textContent='Gespeichert ✓'; markDoorOpened(day); });
 
-  adminBtn.addEventListener('click', ()=> {
-    const p = prompt('Admin öffnen — Passwort? (Standard: admin)');
-    if(p===null) return;
-    if(p!=='admin'){ alert('Falsches Passwort'); return; }
-    renderAdmin();
-    adminPanel.style.display = 'block';
-    adminPanel.scrollIntoView({behavior:'smooth', block:'center'});
-  });
-  closeAdmin.addEventListener('click', ()=> { adminPanel.style.display='none'; });
+  // Admin
+  adminBtn.addEventListener('click', ()=>{ const p = prompt('Admin öffnen — Passwort? (Standard: admin)'); if(p===null) return; if(p!=='admin'){ alert('Falsches Passwort'); return; } renderAdmin(); adminPanel.style.display='block'; adminPanel.scrollIntoView({behavior:'smooth', block:'center'}); });
+  closeAdmin.addEventListener('click', ()=>{ adminPanel.style.display='none'; });
 
-  function renderAdmin(){
-    const subs = loadSubmissions();
-    if(!subs || subs.length===0){ submissionsTableWrap.innerHTML = '<p>Keine Einsendungen.</p>'; return; }
-    let html = '<table><thead><tr><th>Tag</th><th>Name</th><th>Antwort</th><th>Zeitstempel</th></tr></thead><tbody>';
-    for(const s of subs) html += `<tr><td>${s.day}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.answer)}</td><td>${s.ts}</td></tr>`;
-    html += '</tbody></table>';
-    submissionsTableWrap.innerHTML = html;
-  }
+  function renderAdmin(){ const subs = loadSubmissions(); if(!subs || subs.length===0){ submissionsTableWrap.innerHTML='<p>Keine Einsendungen.</p>'; return; } let html='<table><thead><tr><th>Tag</th><th>Name</th><th>Antwort</th><th>Zeitstempel</th></tr></thead><tbody>'; for(const s of subs) html+=`<tr><td>${s.day}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.answer)}</td><td>${s.ts}</td></tr>`; html+='</tbody></table>'; submissionsTableWrap.innerHTML=html; }
 
-  downloadCsv.addEventListener('click', ()=> {
-    const subs = loadSubmissions();
-    if(!subs || subs.length===0){ alert('Keine Einsendungen.'); return; }
-    const rows = [['day','name','answer','timestamp']];
-    subs.forEach(s => rows.push([s.day, s.name, s.answer, s.ts]));
-    const csv = rows.map(r => r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-    const b = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(b);
-    const a = document.createElement('a'); a.href = url; a.download='submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  });
+  downloadCsv.addEventListener('click', ()=>{ const subs = loadSubmissions(); if(!subs || subs.length===0){ alert('Keine Einsendungen.'); return; } const rows=[['day','name','answer','timestamp']]; subs.forEach(s=>rows.push([s.day,s.name,s.answer,s.ts])); const csv = rows.map(r => r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n'); const b=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(b); const a=document.createElement('a'); a.href=url; a.download='submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
 
-  clearData.addEventListener('click', ()=> {
-    if(!confirm('Wirklich alle lokalen Einsendungen löschen?')) return;
-    localStorage.removeItem('advent_submissions'); localStorage.removeItem('advent_meta');
-    renderAdmin(); alert('Gelöscht.');
-  });
+  clearData.addEventListener('click', ()=>{ if(!confirm('Wirklich alle lokalen Einsendungen löschen?')) return; localStorage.removeItem('advent_submissions'); localStorage.removeItem('advent_meta'); renderAdmin(); alert('Gelöscht.'); });
 
   function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-  function init(){
-    if(useRealDate.checked){
-      activeDay = computeActiveDayFromDate();
-      activeDayInput.value = activeDay;
-      activeDayInput.disabled = true;
-    } else {
-      activeDay = parseInt(activeDayInput.value,10) || 0;
-      activeDayInput.disabled = false;
-    }
-    setTimeout(()=> renderDoors(), 60);
-    window.addEventListener('resize', ()=> { setTimeout(()=> renderDoors(), 120); });
-  }
+  function init(){ if(useRealDate.checked){ activeDay = computeActiveDayFromDate(); activeDayInput.value = activeDay; activeDayInput.disabled = true; } else { activeDay = parseInt(activeDayInput.value,10) || 0; activeDayInput.disabled = false; } setTimeout(()=> renderDoors(),60); window.addEventListener('resize', ()=>{ setTimeout(()=> renderDoors(),120); }); }
 
-  activeDayInput.addEventListener('change', ()=> {
-    if(useRealDate.checked) return;
-    activeDay = parseInt(activeDayInput.value,10) || 0;
-    renderDoors();
-  });
-  useRealDate.addEventListener('change', ()=> {
-    if(useRealDate.checked){
-      activeDay = computeActiveDayFromDate();
-      activeDayInput.value = activeDay;
-      activeDayInput.disabled = true;
-    } else {
-      activeDayInput.disabled = false;
-      activeDay = parseInt(activeDayInput.value,10) || 0;
-    }
-    renderDoors();
-  });
+  activeDayInput.addEventListener('change', ()=>{ if(useRealDate.checked) return; activeDay = parseInt(activeDayInput.value,10) || 0; renderDoors(); });
+  useRealDate.addEventListener('change', ()=>{ if(useRealDate.checked){ activeDay = computeActiveDayFromDate(); activeDayInput.value = activeDay; activeDayInput.disabled = true; } else { activeDayInput.disabled = false; activeDay = parseInt(activeDayInput.value,10) || 0; } renderDoors(); });
 
   init();
-
   window.__advent = { renderDoors, computeActiveDayFromDate, loadSubmissions };
 })();
 </script>
