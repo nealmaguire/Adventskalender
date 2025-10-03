@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rätsel-Adventskalender — Zufällige Türen & einzelne Dateien</title>
+  <title>Rätsel-Adventskalender</title>
   <style>
     :root{
-      --door-size:64px;        /* Tür-Größe (kannst du kleiner/grösser setzen) */
+      /* Tür-Größe anpassen */
+      --door-size:56px;
       --door-gap:8px;
-      /* Hintergrundbild: hier anpassen (relativer Pfad oder absolute URL) */
-      --bg-url: url('./Weihnachten.jpg');
+      /* default: leere URL, wird durch JS gesetzt */
+      --bg-url: url('');
     }
 
     html,body{height:100%;margin:0;padding:0;font-family:Inter,system-ui,Arial,sans-serif}
@@ -20,9 +21,10 @@
       background-attachment: fixed;
       background-color:#0b1220;
       color:#111;
+      transition: background-image 400ms ease-in-out;
     }
 
-    /* Container über dem Bild mit leichtem Overlay (damit Inhalte lesenbar sind) */
+    /* Page overlay & layout */
     .page {
       min-height:100%;
       box-sizing:border-box;
@@ -40,57 +42,96 @@
     button{padding:8px 12px;border-radius:8px;border:0;background:#2b6cff;color:white;cursor:pointer}
     button.secondary{background:#6b7280}
 
-    /* Spiel-Fläche: relative, damit Türen absolute darin positioniert werden */
+    /* Spiel-Fläche: relative, damit Türen absolute positioniert werden */
     .playground {
       margin-top:18px;
       width:100%;
       max-width:1200px;
-      height:60vh;              /* sichtbarer Bereich für Türen; anpassen */
+      height:62vh;
       min-height:360px;
       border-radius:10px;
       position:relative;
-      overflow:hidden;         /* Türen bleiben innerhalb */
+      overflow:hidden;
       border:1px solid rgba(255,255,255,0.06);
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
       box-shadow: 0 8px 28px rgba(0,0,0,0.45);
     }
 
-    /* Tür-Button (kleiner) */
+    /* Festliche Türchen */
     .door {
       width: var(--door-size);
       height: var(--door-size);
-      border-radius:10px;
-      background: linear-gradient(180deg,#fff,#f1f5ff);
-      border:2px solid rgba(0,0,0,0.15);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
-      position:absolute;       /* wird per JS gesetzt */
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:800;
-      cursor:pointer;
-      user-select:none;
-      z-index:20;              /* immer über allem */
-      transition: transform 220ms ease, box-shadow 220ms ease;
+      border-radius: 12px;
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.0rem;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+      z-index: 20;
+      background: linear-gradient(145deg, #b71c1c 0%, #e53935 50%, #ffb703 100%);
+      border: 2px solid rgba(255, 209, 102, 0.95);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 -6px 12px rgba(0,0,0,0.12);
+      text-shadow: 0 2px 0 rgba(0,0,0,0.45);
+      transition: transform 220ms cubic-bezier(.2,.9,.3,1), box-shadow 220ms, filter 220ms;
+      overflow: visible;
     }
-    .door:hover{ transform: translateY(-6px); box-shadow: 0 12px 28px rgba(0,0,0,0.45); }
-    .door.opened{ background: linear-gradient(180deg,#fffbe8,#fff1c7); }
+    .door::before{
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: -12%;
+      transform: translateX(-50%);
+      width: 58%;
+      height: 12%;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #8b0000 0%, #b22222 100%);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.35);
+      pointer-events: none;
+    }
+    .door::after{
+      content: '🎁';
+      position: absolute;
+      right: 6%;
+      top: 6%;
+      font-size: 0.95rem;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.45));
+      pointer-events: none;
+    }
+    @keyframes doorTwinkle {
+      0%   { box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+      50%  { box-shadow: 0 18px 36px rgba(255,215,0,0.20); }
+      100% { box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+    }
+    .door:hover{
+      transform: translateY(-8px) scale(1.06) rotate(-2deg);
+      animation: doorTwinkle 900ms ease-in-out;
+      z-index: 100;
+      filter: saturate(1.08);
+    }
+    .door.opened{
+      background: linear-gradient(145deg, #2e7d32 0%, #66bb6a 50%, #ffd54f 100%);
+      border-color: rgba(255, 236, 179, 0.98);
+    }
+    .door.opened::after{
+      content: '✔️';
+      font-size: 1.05rem;
+      right: 8%;
+      top: 8%;
+    }
 
-    /* Puzzle-Box */
+    /* Puzzle-Box und Admin */
     #puzzleBox{
-      margin-top:14px;
-      padding:12px;
-      border-radius:10px;
-      background: rgba(255,255,255,0.98);
-      max-width:920px;
-      border:1px solid #dfe7f6;
-      z-index:6;
+      margin-top:14px;padding:12px;border-radius:10px;background: rgba(255,255,255,0.98);max-width:920px;border:1px solid #dfe7f6;z-index:6;
     }
     input[type=text], textarea{width:100%;padding:8px;border-radius:6px;border:1px solid #ccd5ea}
     table{border-collapse:collapse;width:100%;margin-top:12px}
     table th, table td{border:1px solid #e6e9f2;padding:6px;text-align:left}
     @media (max-width:720px){
-      :root{--door-size:56px}
+      :root{--door-size:48px}
       .playground{height:50vh}
     }
   </style>
@@ -100,14 +141,14 @@
     <header>
       <div>
         <h1>Rätsel-Adventskalender</h1>
-        <div style="color:#fff;font-size:0.95rem;margin-top:6px">Türchen erscheinen ab 1.12. — für Vorschau: „Echt-Datum“ aus und aktiven Tag setzen.</div>
+        <div style="color:#fff;font-size:0.95rem;margin-top:6px">Türchen schalten ab dem 1.12. frei. Für Vorschau: „Echt-Datum“ aus und Aktiven Tag setzen.</div>
       </div>
 
       <div class="controls">
         <label>Aktiver Tag
           <input id="activeDayInput" type="number" min="0" max="24" value="0" />
         </label>
-        <label title="Wenn aktiv: nutzt die Seite das lokale Datum">
+        <label title="Wenn aktiv, verwendet die Seite das lokale Datum">
           <input id="useRealDate" type="checkbox" checked /> Echt-Datum
         </label>
         <button id="adminBtn" class="secondary">Admin</button>
@@ -148,7 +189,13 @@
   </div>
 
 <script>
-(function(){
+(async function(){
+
+  // ----- Konfiguration ----- //
+  const BG_BASENAME = './Weihnachten'; // Basisname ohne Endung (du sagtest: Datei heißt "Weihnachten" im Repo root)
+  const BG_EXTS = ['.jpg','.png','.jpeg','.webp','']; // prüfe gängige Endungen, dann ohne Endung
+  const FALLBACK_BG = 'https://images.unsplash.com/photo-1549576490-b0b4831ef60a?auto=format&fit=crop&w=1400&q=80';
+
   // Elemente
   const playground = document.getElementById('playground');
   const activeDayInput = document.getElementById('activeDayInput');
@@ -169,11 +216,42 @@
   const closeAdmin = document.getElementById('closeAdmin');
   const submissionsTableWrap = document.getElementById('submissionsTableWrap');
 
-  const DOOR_SIZE_PX = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--door-size')) || 64;
-  let activeDay = 0;
-  let doors = []; // hält DOM-Elemente und Positionen
+  // Größen
+  const DOOR_SIZE = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--door-size')) || 56;
 
-  // UTIL
+  // ----- Helper: finde funktionierende Bild-URL ----- //
+  async function findBackgroundUrl(){
+    for(const ext of BG_EXTS){
+      const candidate = BG_BASENAME + ext;
+      try {
+        // try HEAD first (faster), fallback to GET if server doesn't allow HEAD
+        const head = await fetch(candidate, { method: 'HEAD', cache: 'no-cache' });
+        if(head && head.ok) return candidate;
+      } catch(e){
+        try {
+          const get = await fetch(candidate, { method: 'GET', cache: 'no-cache' });
+          if(get && get.ok) return candidate;
+        } catch(e2){
+          // ignore
+        }
+      }
+    }
+    // fallback
+    return FALLBACK_BG;
+  }
+
+  // setze CSS-Variable --bg-url
+  try {
+    const bg = await findBackgroundUrl();
+    const url = bg.startsWith('http') ? bg : bg; // candidate path or absolute url
+    document.documentElement.style.setProperty('--bg-url', `url('${url}')`);
+    console.info('Hintergrund gesetzt auf:', url);
+  } catch(err){
+    document.documentElement.style.setProperty('--bg-url', `url('${FALLBACK_BG}')`);
+    console.warn('Fehler beim Laden des Hintergrunds, Fallback genutzt.', err);
+  }
+
+  // ----- Funktionalität Kalender ----- //
   function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr; }
   function computeActiveDayFromDate(){
     const now = new Date();
@@ -185,22 +263,21 @@
     return Math.min(24, now.getDate());
   }
 
-  // STORAGE
-  function loadSubmissions(){ try{ const raw=localStorage.getItem('advent_submissions'); return raw?JSON.parse(raw):[]; }catch(e){ return []; } }
-  function saveSubmissions(arr){ localStorage.setItem('advent_submissions', JSON.stringify(arr)); }
-  function loadMeta(){ try{ return JSON.parse(localStorage.getItem('advent_meta')||'{}'); }catch(e){ return {}; } }
-  function saveMeta(obj){ localStorage.setItem('advent_meta', JSON.stringify(obj)); }
+  function loadSubmissions(){ try{ const raw=localStorage.getItem('advent_submissions'); return raw?JSON.parse(raw):[] }catch(e){return[]}}
+  function saveSubmissions(arr){ localStorage.setItem('advent_submissions', JSON.stringify(arr)) }
+  function loadMeta(){ try{ return JSON.parse(localStorage.getItem('advent_meta')||'{}') }catch(e){return{}} }
+  function saveMeta(obj){ localStorage.setItem('advent_meta', JSON.stringify(obj)) }
 
-  // Positionierung: generiert zufällige non-overlapping Positionen innerhalb playground
+  // generatePositions: non-overlapping positions for count items inside playground
   function generatePositions(count){
     const rect = playground.getBoundingClientRect();
     const padding = 8;
     const minX = padding;
     const minY = padding;
-    const maxX = Math.max(0, rect.width - DOOR_SIZE_PX - padding);
-    const maxY = Math.max(0, rect.height - DOOR_SIZE_PX - padding);
+    const maxX = Math.max(0, Math.floor(rect.width - DOOR_SIZE - padding));
+    const maxY = Math.max(0, Math.floor(rect.height - DOOR_SIZE - padding));
     const positions = [];
-    const maxTries = 2000;
+    const maxTries = 1500;
 
     for(let i=0;i<count;i++){
       let tries = 0;
@@ -208,11 +285,10 @@
       while(!placed && tries < maxTries){
         const x = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
         const y = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-        const box = {x,y,w:DOOR_SIZE_PX,h:DOOR_SIZE_PX};
-        // check overlap
+        const box = {x,y,w:DOOR_SIZE,h:DOOR_SIZE};
         let ok = true;
         for(const p of positions){
-          const pad = 6; // extra spacing between doors
+          const pad = 6;
           if(!(box.x + box.w + pad < p.x || box.x > p.x + p.w + pad || box.y + box.h + pad < p.y || box.y > p.y + p.h + pad)){
             ok = false; break;
           }
@@ -221,18 +297,18 @@
         tries++;
       }
       if(!placed){
-        // fallback: place somewhere (may overlap)
-        positions.push({x: Math.floor(Math.random()*(maxX-minX+1))+minX, y: Math.floor(Math.random()*(maxY-minY+1))+minY, w:DOOR_SIZE_PX, h:DOOR_SIZE_PX});
+        positions.push({x: Math.floor(Math.random()*(maxX-minX+1))+minX, y: Math.floor(Math.random()*(maxY-minY+1))+minY, w:DOOR_SIZE, h:DOOR_SIZE});
       }
     }
     return positions;
   }
 
-  // Render doors: clear and create door elements positioned absolutely
+  let currentDoors = []; // {day, el}
+
   function renderDoors(){
-    playground.innerHTML = ''; doors = [];
+    playground.innerHTML = '';
+    currentDoors = [];
     if(activeDay === 0){
-      // Nachricht, keine Türen sichtbar
       const ph = document.createElement('div');
       ph.style.color = '#fff';
       ph.style.padding = '18px';
@@ -245,11 +321,8 @@
       return;
     }
 
-    // decide how many doors to show: activeDay (1..24)
     const count = Math.min(24, Math.max(0, activeDay));
-    // generate positions
     const positions = generatePositions(count);
-    // create array of numbers 1..24 and take first `count` shuffled
     const nums = [];
     for(let i=1;i<=24;i++) nums.push(i);
     shuffle(nums);
@@ -261,12 +334,12 @@
       const el = document.createElement('button');
       el.className = 'door';
       el.textContent = day;
-      el.style.left = pos.x + 'px';
-      el.style.top  = pos.y + 'px';
       el.dataset.day = day;
+      el.style.left = pos.x + 'px';
+      el.style.top = pos.y + 'px';
       el.addEventListener('click', ()=> openDoor(day, el));
       playground.appendChild(el);
-      doors.push({day,el,pos});
+      currentDoors.push({day, el});
     }
 
     // mark opened from storage
@@ -279,14 +352,14 @@
     showPuzzleForDay(day);
   }
 
-  // load per-day file from ./doors/<day>.html (fall back message if missing)
+  // load ./doors/<day>.html
   async function showPuzzleForDay(day){
     puzzleTitle.textContent = 'Rätsel — Tag ' + day;
     puzzleContent.innerHTML = '<em>Lädt Inhalt...</em>';
     puzzleBox.style.display = 'block';
     try {
-      const path = `./doors/${day}.html`; // expected location in your repo
-      const resp = await fetch(path);
+      const path = `./doors/${day}.html`;
+      const resp = await fetch(path, {cache:'no-cache'});
       if(!resp.ok) throw new Error('nicht gefunden');
       const html = await resp.text();
       puzzleContent.innerHTML = html;
@@ -300,19 +373,17 @@
   }
 
   function markDoorOpened(day){
-    const d = doors.find(x=>x.day==day);
-    if(d) d.el.classList.add('opened');
+    const entry = currentDoors.find(x=>x.day==day);
+    if(entry) entry.el.classList.add('opened');
   }
 
-  // Save answer
+  // Save reply
   saveBtn.addEventListener('click', ()=> {
     const name = nameField.value.trim();
     const answer = answerField.value.trim();
     if(!name){ alert('Bitte Namen eingeben.'); return; }
-    // Determine which puzzle is open from title
-    const txt = puzzleTitle.textContent || '';
-    const m = txt.match(/Tag\s+(\d+)/);
-    const day = m ? parseInt(m[1],10) : null;
+    const m = puzzleTitle.textContent.match(/Tag\s+(\d+)/);
+    const day = m?parseInt(m[1],10):null;
     if(!day){ alert('Kein Tag erkennbar.'); return; }
     const subs = loadSubmissions();
     subs.push({day, name, answer, ts: new Date().toISOString()});
@@ -322,15 +393,13 @@
     markDoorOpened(day);
   });
 
-  closeBtn.addEventListener('click', ()=> { puzzleBox.style.display='none'; });
-
-  // Admin area (local)
+  // Admin local
   adminBtn.addEventListener('click', ()=> {
     const p = prompt('Admin öffnen — Passwort? (Standard: admin)');
     if(p===null) return;
     if(p!=='admin'){ alert('Falsches Passwort'); return; }
     renderAdmin();
-    adminPanel.style.display='block';
+    adminPanel.style.display = 'block';
     adminPanel.scrollIntoView({behavior:'smooth', block:'center'});
   });
   closeAdmin.addEventListener('click', ()=> { adminPanel.style.display='none'; });
@@ -351,7 +420,7 @@
     subs.forEach(s => rows.push([s.day, s.name, s.answer, s.ts]));
     const csv = rows.map(r => r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
     const b = new Blob([csv], {type:'text/csv'}); const url = URL.createObjectURL(b);
-    const a = document.createElement('a'); a.href=url; a.download='submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    const a = document.createElement('a'); a.href = url; a.download='submissions.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   });
 
   clearData.addEventListener('click', ()=> {
@@ -372,13 +441,9 @@
       activeDay = parseInt(activeDayInput.value,10) || 0;
       activeDayInput.disabled = false;
     }
-    // initial render
-    setTimeout(()=> renderDoors(), 60); // slight delay to ensure playground dims/size ready
-    // re-render on resize to adapt positions
-    window.addEventListener('resize', ()=> {
-      // regenerate positions for same count
-      setTimeout(()=> renderDoors(), 120);
-    });
+    // slight delay ensures playground has size
+    setTimeout(()=> renderDoors(), 60);
+    window.addEventListener('resize', ()=> { setTimeout(()=> renderDoors(), 120); });
   }
 
   activeDayInput.addEventListener('change', ()=> {
@@ -398,12 +463,11 @@
     renderDoors();
   });
 
-  // start
+  // Start
   init();
 
-  // expose helpers for debug (optional)
+  // Expose debug helpers
   window.__advent = { renderDoors, computeActiveDayFromDate, loadSubmissions };
-
 })();
 </script>
 </body>
